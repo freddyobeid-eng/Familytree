@@ -1,0 +1,687 @@
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obeid Family Around the World</title>
+
+<!-- ===== LOGIN PAGE STYLES ===== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Source Sans 3', sans-serif; background: #0d1117; color: #1a1a1a; min-height: 100vh; overflow-x: hidden; }
+
+/* LOGIN PAGE */
+#login-page {
+  position: fixed; inset: 0; z-index: 9000;
+  background: linear-gradient(135deg, #0d1117 0%, #1a2540 45%, #0d2035 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+#login-page.fade-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
+
+/* Stars */
+.stars { position: absolute; inset: 0; overflow: hidden; z-index: 0; }
+.star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s); }
+@keyframes twinkle { 0%,100%{opacity:0.15;transform:scale(1);} 50%{opacity:1;transform:scale(1.4);} }
+
+/* Decorative rings */
+.globe-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(200,168,0,0.12); animation: gspin var(--s,40s) linear infinite; }
+@keyframes gspin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+.login-card {
+  position: relative; z-index: 10; text-align: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(200,168,0,0.22);
+  border-radius: 24px; padding: 3rem 3.5rem;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07);
+  max-width: 460px; width: 90%;
+}
+.login-ornament {
+  font-size: 56px; margin-bottom: 1rem;
+  animation: glow 2.8s ease-in-out infinite;
+}
+@keyframes glow { 0%,100%{filter:drop-shadow(0 0 10px rgba(200,168,0,0.3));} 50%{filter:drop-shadow(0 0 32px rgba(200,168,0,0.75));} }
+
+.login-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  font-weight: 700; color: #f5e9c8;
+  line-height: 1.2; margin-bottom: 0.5rem;
+  text-shadow: 0 2px 20px rgba(200,168,0,0.3);
+}
+.login-sub { font-size: 12px; color: rgba(245,233,200,0.45); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 2.2rem; }
+.login-divider { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #C8A800, transparent); margin: 0 auto 2rem; }
+
+.login-label { font-size: 11px; font-weight: 600; color: rgba(245,233,200,0.55); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 8px; text-align: left; }
+
+.login-input-wrap { position: relative; margin-bottom: 1.4rem; }
+.login-input {
+  width: 100%; padding: 14px 20px 14px 48px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(200,168,0,0.28);
+  border-radius: 10px; font-size: 15px;
+  color: #f5e9c8; letter-spacing: 0.08em;
+  font-family: 'Source Sans 3', sans-serif;
+  transition: all 0.2s;
+}
+.login-input::placeholder { color: rgba(245,233,200,0.22); }
+.login-input:focus { outline: none; border-color: #C8A800; background: rgba(255,255,255,0.09); box-shadow: 0 0 0 4px rgba(200,168,0,0.13); }
+.login-input.shake { animation: shake 0.4s ease; border-color: #e05555; }
+@keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-8px);} 75%{transform:translateX(8px);} }
+.input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; opacity: 0.45; }
+
+.login-btn {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, #C8A800, #e0c200, #C8A800);
+  background-size: 200% 100%;
+  border: none; border-radius: 10px;
+  font-size: 14px; font-weight: 700;
+  color: #1a1200; letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(200,168,0,0.3);
+}
+.login-btn:hover { background-position: right center; box-shadow: 0 6px 28px rgba(200,168,0,0.55); transform: translateY(-1px); }
+.login-btn:active { transform: translateY(0); }
+
+.login-error-msg { font-size: 12px; color: #ff7070; font-weight: 500; min-height: 18px; margin-bottom: 1rem; text-align: center; opacity: 0; transition: opacity 0.2s; }
+.login-error-msg.show { opacity: 1; }
+.login-footer-txt { margin-top: 1.8rem; font-size: 11px; color: rgba(245,233,200,0.22); letter-spacing: 0.05em; }
+
+/* TREE PAGE */
+#tree-page { display: none; min-height: 100vh; background: #f7f4ef; animation: tpFadeIn 0.6s ease; }
+@keyframes tpFadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+
+.site-header {
+  background: linear-gradient(135deg, #1a2540, #0d2035);
+  color: #f5e9c8; padding: 0.9rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.35);
+}
+.site-header-left { display: flex; align-items: center; gap: 9px; }
+.site-header-icon { font-size: 22px; }
+.site-header-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; letter-spacing: 0.02em; }
+.logout-btn { font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(200,168,0,0.35); background: rgba(200,168,0,0.1); color: #C8A800; cursor: pointer; letter-spacing: 0.04em; transition: all 0.15s; }
+.logout-btn:hover { background: rgba(200,168,0,0.22); border-color: #C8A800; }
+</style>
+
+<!-- ===== ORIGINAL TREE STYLES ===== -->
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Sans+3:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Source Sans 3',sans-serif;background:#f7f4ef;color:#1a1a1a;}
+#app{padding:1.2rem 1.5rem 2rem;}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center;}
+.tbtn{font-size:12px;font-weight:600;padding:7px 16px;border-radius:6px;border:1.5px solid #d0c9bc;background:#fff;color:#3a3530;cursor:pointer;transition:all 0.15s;letter-spacing:0.02em;}
+.tbtn:hover{background:#f0ebe3;border-color:#b0a898;}
+.tbtn.blue{background:#2c5f8a;color:#fff;border-color:#2c5f8a;}
+.tbtn.blue:hover{background:#1e4568;}
+.tbtn.green{background:#2d7a5f;color:#fff;border-color:#2d7a5f;}
+.tbtn.green:hover{background:#1e5a44;}
+.tbtn.red{background:#8a2c2c;color:#fff;border-color:#8a2c2c;}
+.tbtn.red:hover{background:#6a1c1c;}
+.tbtn.amber{background:#c47d00;color:#fff;border-color:#c47d00;}
+.tbtn.amber:hover{background:#9a6000;}
+.tbtn.purple{background:#5a3a8a;color:#fff;border-color:#5a3a8a;}
+.tbtn.purple:hover{background:#3e2860;}
+.saved-msg{font-size:11px;color:#2d7a5f;font-weight:600;opacity:0;transition:opacity 0.4s;}
+.saved-msg.show{opacity:1;}
+
+#edit-banner{display:none;background:linear-gradient(90deg,#c47d00,#e09a00);color:#fff;padding:8px 16px;font-size:12px;font-weight:600;border-radius:8px;margin-bottom:1rem;box-shadow:0 2px 10px rgba(196,125,0,0.3);align-items:center;justify-content:center;gap:8px;}
+#edit-banner.show{display:flex;}
+
+.tree-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#2c2017;margin-bottom:0.2rem;}
+.tree-subtitle{font-size:12px;color:#8a7f73;margin-bottom:1rem;}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:1.2rem;}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:#6b6057;}
+.lb{width:12px;height:12px;border-radius:3px;border:1.5px solid;}
+.lb-anc{background:#FFF3B0;border-color:#C8A800;}
+.lb-norm{background:#ddeaf7;border-color:#2c5f8a;}
+.lb-gray{background:#ebe8e3;border-color:#b0a898;}
+.ld{width:7px;height:7px;border-radius:50%;background:#2d7a5f;}
+
+/* CANVAS */
+#canvas-wrap{position:relative;overflow:auto;background:#fff;border-radius:12px;border:1px solid #e0d9cf;box-shadow:0 2px 20px rgba(0,0,0,0.06);}
+#canvas-inner{position:relative;}
+svg#svg-lines{position:absolute;top:0;left:0;pointer-events:none;overflow:visible;z-index:1;}
+#nodes-layer{position:absolute;top:0;left:0;z-index:2;}
+
+/* NODE WRAPPER */
+.nbox{position:absolute;}
+.nbox.dragging{z-index:999!important;}
+.nbox.dragging .person{box-shadow:0 8px 30px rgba(44,95,138,0.45)!important;transform:scale(1.05);}
+
+/* DRAG HANDLE — only visible in edit mode */
+.drag-handle{
+  position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+  width:38px;height:11px;
+  background:#e4eff8;border:1px solid #b0ccdf;border-radius:4px 4px 0 0;
+  cursor:grab;display:none;align-items:center;justify-content:center;
+  font-size:9px;color:#6a8aaa;letter-spacing:3px;user-select:none;
+}
+.drag-handle:active{cursor:grabbing;background:#cce0f0;}
+.edit-mode .drag-handle{display:flex;}
+
+/* PERSON CARD */
+.person{
+  background:#ddeaf7;border:1.5px solid #2c5f8a;border-radius:10px;
+  padding:6px 10px;width:90px;text-align:center;
+  position:relative;user-select:none;
+  transition:box-shadow 0.15s;
+}
+.person.ancestor{background:#FFF3B0;border-color:#C8A800;border-width:2px;}
+.person.gray-node{background:#ebe8e3;border-color:#b0a898;}
+.person.root{border-width:2.5px;box-shadow:0 0 0 3px rgba(44,95,138,0.15);}
+.person.has-note::after{content:'';position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:#2d7a5f;}
+.person-name{font-size:11px;font-weight:600;color:#1a2a3a;line-height:1.3;}
+.person.ancestor .person-name{color:#4a3800;}
+.person.gray-node .person-name{color:#7a7168;}
+.person-year{font-size:9px;color:#5a7a9a;margin-top:2px;font-weight:500;}
+.person.ancestor .person-year{color:#7a6000;}
+.person-note-pre{font-size:9px;color:#2d7a5f;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ACTION BAR — only shown in edit mode on hover */
+.action-bar{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);display:none;gap:2px;background:#fff;border:1px solid #d0c9bc;border-radius:20px;padding:3px 6px;z-index:30;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+.edit-mode .person:hover .action-bar{display:flex;}
+.action-bar button{background:none;border:none;font-size:10px;cursor:pointer;padding:1px 4px;border-radius:3px;color:#5a5048;font-weight:500;}
+.action-bar button:hover{background:#f0ebe3;color:#1a1a1a;}
+.action-bar .del:hover{color:#9a2020;background:#fce8e8;}
+
+/* ADD BUTTONS — only shown in edit mode */
+.add-btn{width:20px;height:20px;border-radius:50%;border:1.5px dashed #b0a898;background:#f7f4ef;color:#8a7f73;font-size:14px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all 0.15s;position:absolute;}
+.edit-mode .add-btn{display:flex;}
+.add-btn:hover{border-color:#2c5f8a;color:#2c5f8a;background:#ddeaf7;}
+
+/* PANELS */
+.overlay{position:fixed;inset:0;background:rgba(26,18,10,0.4);z-index:99;backdrop-filter:blur(2px);}
+.panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:1px solid #d0c9bc;border-radius:14px;padding:1.6rem;width:310px;z-index:100;box-shadow:0 16px 48px rgba(0,0,0,0.18);}
+.panel h3{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:1.2rem;color:#2c2017;}
+.field{margin-bottom:12px;}
+.field label{font-size:11px;font-weight:600;color:#6b6057;display:block;margin-bottom:4px;letter-spacing:0.04em;text-transform:uppercase;}
+.field input,.field textarea,.field select{width:100%;padding:8px 10px;border-radius:7px;border:1.5px solid #d0c9bc;font-size:13px;background:#faf8f5;color:#1a1a1a;font-family:'Source Sans 3',sans-serif;transition:border-color 0.15s;}
+.field textarea{resize:vertical;min-height:70px;line-height:1.6;}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:#2c5f8a;background:#fff;box-shadow:0 0 0 3px rgba(44,95,138,0.1);}
+.pbtns{display:flex;gap:8px;margin-top:1.2rem;}
+.btn{font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid #d0c9bc;background:#fff;color:#3a3530;cursor:pointer;}
+.btn:hover{background:#f0ebe3;}
+.btn-p{background:#2c5f8a;color:#fff;border-color:#2c5f8a;}
+.btn-p:hover{background:#1e4568;}
+
+/* PASSWORD PANEL */
+#pw-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:1px solid #d0c9bc;border-radius:14px;padding:2rem;width:300px;z-index:100;box-shadow:0 16px 48px rgba(0,0,0,0.22);text-align:center;}
+#pw-panel h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:0.4rem;color:#2c2017;}
+#pw-panel p{font-size:12px;color:#8a7f73;margin-bottom:1.2rem;}
+#pw-icon{font-size:38px;margin-bottom:0.8rem;}
+#pw-input{width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #d0c9bc;font-size:18px;text-align:center;letter-spacing:0.2em;font-family:'Source Sans 3',sans-serif;background:#faf8f5;}
+#pw-input:focus{outline:none;border-color:#2c5f8a;box-shadow:0 0 0 3px rgba(44,95,138,0.1);}
+#pw-error{font-size:11px;color:#9a2020;margin-top:8px;min-height:16px;font-weight:600;}
+
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN PAGE ==================== -->
+<div id="login-page" class="fade-out" style="display: none;">
+  <div class="stars" id="stars-container"><div class="star" style="width: 2.47199px; height: 2.47199px; top: 13.9844%; left: 65.5099%; --d: 4.291287489719998s; --delay: 2.2750690763439207s; opacity: 0.702;"></div><div class="star" style="width: 2.0426px; height: 2.0426px; top: 44.741%; left: 13.4631%; --d: 2.496870561064526s; --delay: 4.355306147995288s; opacity: 0.497583;"></div><div class="star" style="width: 1.5794px; height: 1.5794px; top: 71.9752%; left: 65.6856%; --d: 4.798478101171199s; --delay: 0.06557342888227669s; opacity: 0.386366;"></div><div class="star" style="width: 0.79002px; height: 0.79002px; top: 12.6012%; left: 72.8558%; --d: 2.0178044537629694s; --delay: 3.0356391039702864s; opacity: 0.661575;"></div><div class="star" style="width: 1.87374px; height: 1.87374px; top: 75.8327%; left: 75.0076%; --d: 5.004808517467387s; --delay: 0.3689927000340636s; opacity: 0.742014;"></div><div class="star" style="width: 2.34104px; height: 2.34104px; top: 35.45%; left: 19.4032%; --d: 5.75038085954537s; --delay: 5.068420242438901s; opacity: 0.595092;"></div><div class="star" style="width: 1.2643px; height: 1.2643px; top: 34.6025%; left: 89.4047%; --d: 5.398155746681493s; --delay: 4.0832340266980784s; opacity: 0.729168;"></div><div class="star" style="width: 1.34773px; height: 1.34773px; top: 18.251%; left: 21.073%; --d: 2.3300290722677093s; --delay: 4.166000463463767s; opacity: 0.593;"></div><div class="star" style="width: 2.30114px; height: 2.30114px; top: 90.687%; left: 29.79%; --d: 3.105225380571185s; --delay: 3.6767092918722915s; opacity: 0.151503;"></div><div class="star" style="width: 1.09312px; height: 1.09312px; top: 33.1299%; left: 79.1423%; --d: 3.7504717800535228s; --delay: 4.490143659959481s; opacity: 0.703989;"></div><div class="star" style="width: 1.77024px; height: 1.77024px; top: 33.9117%; left: 59.5317%; --d: 2.2731951819051206s; --delay: 4.119204098907803s; opacity: 0.55078;"></div><div class="star" style="width: 2.45785px; height: 2.45785px; top: 54.6914%; left: 32.2263%; --d: 2.27425398329336s; --delay: 1.0377026617611245s; opacity: 0.357889;"></div><div class="star" style="width: 0.532524px; height: 0.532524px; top: 84.0478%; left: 88.3287%; --d: 2.4739450081803036s; --delay: 0.03970927622013032s; opacity: 0.25188;"></div><div class="star" style="width: 2.2512px; height: 2.2512px; top: 87.7132%; left: 41.4553%; --d: 2.719930361547017s; --delay: 1.1297962836003221s; opacity: 0.436708;"></div><div class="star" style="width: 1.7403px; height: 1.7403px; top: 73.6393%; left: 29.3007%; --d: 3.140175275977491s; --delay: 3.0171562077280694s; opacity: 0.340216;"></div><div class="star" style="width: 2.15831px; height: 2.15831px; top: 52.5064%; left: 13.5118%; --d: 3.802571152956011s; --delay: 1.6685955500804952s; opacity: 0.18215;"></div><div class="star" style="width: 1.70476px; height: 1.70476px; top: 87.1762%; left: 71.5264%; --d: 2.2002022811941027s; --delay: 0.4773085697315218s; opacity: 0.545292;"></div><div class="star" style="width: 1.31419px; height: 1.31419px; top: 15.1092%; left: 25.2182%; --d: 4.3087022384230735s; --delay: 3.507008696355124s; opacity: 0.443998;"></div><div class="star" style="width: 1.39636px; height: 1.39636px; top: 71.9662%; left: 0.712388%; --d: 3.024029119541176s; --delay: 1.910415320825557s; opacity: 0.347893;"></div><div class="star" style="width: 2.36247px; height: 2.36247px; top: 75.0775%; left: 4.02128%; --d: 3.574250905123792s; --delay: 4.2711264373221525s; opacity: 0.374313;"></div><div class="star" style="width: 0.763325px; height: 0.763325px; top: 17.6578%; left: 46.5462%; --d: 4.21678959773566s; --delay: 2.827239388626656s; opacity: 0.261714;"></div><div class="star" style="width: 0.648943px; height: 0.648943px; top: 61.1108%; left: 97.2681%; --d: 3.0413087746030727s; --delay: 4.217333254744455s; opacity: 0.321755;"></div><div class="star" style="width: 2.57659px; height: 2.57659px; top: 11.1893%; left: 30.1642%; --d: 5.082089766358386s; --delay: 5.924261409400922s; opacity: 0.448474;"></div><div class="star" style="width: 2.33232px; height: 2.33232px; top: 36.8824%; left: 25.4906%; --d: 3.6075820414079853s; --delay: 0.7151361067432744s; opacity: 0.490171;"></div><div class="star" style="width: 2.22402px; height: 2.22402px; top: 76.0751%; left: 22.9645%; --d: 4.118886502218118s; --delay: 5.510613373636693s; opacity: 0.420896;"></div><div class="star" style="width: 1.44131px; height: 1.44131px; top: 93.192%; left: 23.76%; --d: 5.572714688469033s; --delay: 3.318453835331736s; opacity: 0.698347;"></div><div class="star" style="width: 0.552616px; height: 0.552616px; top: 76.7721%; left: 83.7593%; --d: 3.851456455413341s; --delay: 0.09130379986192705s; opacity: 0.69381;"></div><div class="star" style="width: 2.63299px; height: 2.63299px; top: 80.0427%; left: 45.1054%; --d: 3.587525279861924s; --delay: 5.303132559927246s; opacity: 0.249675;"></div><div class="star" style="width: 0.609043px; height: 0.609043px; top: 90.1423%; left: 54.5616%; --d: 5.9172377582283655s; --delay: 1.6931254727220464s; opacity: 0.333669;"></div><div class="star" style="width: 0.594995px; height: 0.594995px; top: 84.2809%; left: 68.8367%; --d: 4.322198492816466s; --delay: 5.543925876617295s; opacity: 0.179118;"></div><div class="star" style="width: 2.45062px; height: 2.45062px; top: 11.1388%; left: 15.9674%; --d: 5.973262932492034s; --delay: 5.165391973922953s; opacity: 0.554746;"></div><div class="star" style="width: 1.03994px; height: 1.03994px; top: 61.9294%; left: 21.1616%; --d: 2.1867545495449927s; --delay: 2.691375435691782s; opacity: 0.521488;"></div><div class="star" style="width: 2.76193px; height: 2.76193px; top: 64.3385%; left: 7.31637%; --d: 2.871619810631472s; --delay: 2.3025616027891056s; opacity: 0.304395;"></div><div class="star" style="width: 1.57083px; height: 1.57083px; top: 4.4514%; left: 88.3169%; --d: 2.809577857427659s; --delay: 3.518064418176751s; opacity: 0.557136;"></div><div class="star" style="width: 2.15104px; height: 2.15104px; top: 59.6227%; left: 9.17027%; --d: 2.984927174859234s; --delay: 4.486718301340787s; opacity: 0.45177;"></div><div class="star" style="width: 2.80141px; height: 2.80141px; top: 41.7138%; left: 65.5095%; --d: 2.78278348644331s; --delay: 3.896373180140227s; opacity: 0.703993;"></div><div class="star" style="width: 2.55928px; height: 2.55928px; top: 88.4872%; left: 38.4026%; --d: 4.773195596736091s; --delay: 1.969636299539132s; opacity: 0.190755;"></div><div class="star" style="width: 2.04857px; height: 2.04857px; top: 90.9495%; left: 91.4351%; --d: 2.911710471258792s; --delay: 2.7703178225212364s; opacity: 0.55561;"></div><div class="star" style="width: 1.14459px; height: 1.14459px; top: 30.0668%; left: 24.2781%; --d: 4.981288996685507s; --delay: 0.13020527725056885s; opacity: 0.730324;"></div><div class="star" style="width: 2.33865px; height: 2.33865px; top: 95.0713%; left: 57.0123%; --d: 2.0391497280430566s; --delay: 2.8172219150585094s; opacity: 0.542018;"></div><div class="star" style="width: 1.1914px; height: 1.1914px; top: 18.0359%; left: 74.2932%; --d: 4.973634752062669s; --delay: 1.2119732180486618s; opacity: 0.380831;"></div><div class="star" style="width: 0.627177px; height: 0.627177px; top: 20.2221%; left: 89.0647%; --d: 5.326098824598432s; --delay: 4.277634102999209s; opacity: 0.721314;"></div><div class="star" style="width: 0.915332px; height: 0.915332px; top: 14.9696%; left: 71.609%; --d: 3.741427232584693s; --delay: 2.709027450318322s; opacity: 0.221761;"></div><div class="star" style="width: 1.79892px; height: 1.79892px; top: 13.0301%; left: 62.2619%; --d: 4.688282531557766s; --delay: 2.900488049060103s; opacity: 0.695488;"></div><div class="star" style="width: 1.78321px; height: 1.78321px; top: 9.47588%; left: 98.2302%; --d: 3.19088015569082s; --delay: 2.5798997232064345s; opacity: 0.333405;"></div><div class="star" style="width: 0.538036px; height: 0.538036px; top: 32.359%; left: 6.29586%; --d: 5.164665184523141s; --delay: 0.18180302642351442s; opacity: 0.299314;"></div><div class="star" style="width: 0.870561px; height: 0.870561px; top: 19.2542%; left: 33.4863%; --d: 2.161318263056668s; --delay: 4.289573608678896s; opacity: 0.643095;"></div><div class="star" style="width: 2.67653px; height: 2.67653px; top: 42.0798%; left: 15.653%; --d: 4.472149457970598s; --delay: 2.515357502695578s; opacity: 0.62581;"></div><div class="star" style="width: 2.07727px; height: 2.07727px; top: 44.1444%; left: 65.0371%; --d: 5.830989567948468s; --delay: 3.732011983425546s; opacity: 0.284829;"></div><div class="star" style="width: 2.28973px; height: 2.28973px; top: 82.4051%; left: 35.8413%; --d: 4.76150265293057s; --delay: 1.2461126954758965s; opacity: 0.502094;"></div><div class="star" style="width: 0.911898px; height: 0.911898px; top: 80.754%; left: 4.35126%; --d: 5.440909567525204s; --delay: 0.10365224506507076s; opacity: 0.624603;"></div><div class="star" style="width: 0.812169px; height: 0.812169px; top: 91.0538%; left: 48.9357%; --d: 3.2595973430577265s; --delay: 2.8294597889778172s; opacity: 0.234053;"></div><div class="star" style="width: 0.906577px; height: 0.906577px; top: 15.9644%; left: 90.538%; --d: 3.605558040435768s; --delay: 3.9195874899395498s; opacity: 0.15321;"></div><div class="star" style="width: 2.69329px; height: 2.69329px; top: 84.9795%; left: 42.3358%; --d: 5.016255661415464s; --delay: 2.2023580606516964s; opacity: 0.312669;"></div><div class="star" style="width: 2.14055px; height: 2.14055px; top: 69.075%; left: 18.8356%; --d: 3.3338141735320574s; --delay: 1.053672074756351s; opacity: 0.237211;"></div><div class="star" style="width: 1.88559px; height: 1.88559px; top: 42.07%; left: 93.5845%; --d: 3.09259472757245s; --delay: 0.05045337112562409s; opacity: 0.452875;"></div><div class="star" style="width: 2.0124px; height: 2.0124px; top: 9.08593%; left: 4.47317%; --d: 3.2359056529748726s; --delay: 3.7017390665110868s; opacity: 0.324873;"></div><div class="star" style="width: 1.72008px; height: 1.72008px; top: 67.9801%; left: 32.5019%; --d: 4.637701311085026s; --delay: 3.19548575627695s; opacity: 0.396183;"></div><div class="star" style="width: 2.95878px; height: 2.95878px; top: 41.3196%; left: 59.5595%; --d: 3.0453968856952183s; --delay: 1.0969881165809523s; opacity: 0.603089;"></div><div class="star" style="width: 0.5424px; height: 0.5424px; top: 83.4985%; left: 26.3404%; --d: 4.014260941680664s; --delay: 1.9403254228669125s; opacity: 0.330913;"></div><div class="star" style="width: 2.4939px; height: 2.4939px; top: 46.336%; left: 89.2443%; --d: 5.511741770591872s; --delay: 4.732092612634247s; opacity: 0.566506;"></div><div class="star" style="width: 2.76293px; height: 2.76293px; top: 19.0302%; left: 11.4257%; --d: 4.940203002703643s; --delay: 3.377055748051323s; opacity: 0.285613;"></div><div class="star" style="width: 1.25816px; height: 1.25816px; top: 56.1057%; left: 85.8698%; --d: 4.840349096887623s; --delay: 4.987777245316683s; opacity: 0.692136;"></div><div class="star" style="width: 0.647485px; height: 0.647485px; top: 68.3642%; left: 72.7744%; --d: 4.964072820457375s; --delay: 2.8626217072883318s; opacity: 0.44074;"></div><div class="star" style="width: 2.51367px; height: 2.51367px; top: 58.9158%; left: 13.7602%; --d: 3.6176066575422072s; --delay: 5.614095813300585s; opacity: 0.221728;"></div><div class="star" style="width: 0.708378px; height: 0.708378px; top: 70.6257%; left: 66.8395%; --d: 5.100148627126466s; --delay: 2.4816164192814796s; opacity: 0.636137;"></div><div class="star" style="width: 1.88999px; height: 1.88999px; top: 23.1867%; left: 31.8361%; --d: 5.904309830268957s; --delay: 4.979200443059022s; opacity: 0.541339;"></div><div class="star" style="width: 2.01354px; height: 2.01354px; top: 92.1809%; left: 6.1598%; --d: 3.358325794840344s; --delay: 4.2586331457479805s; opacity: 0.305974;"></div><div class="star" style="width: 1.38963px; height: 1.38963px; top: 57.6028%; left: 36.3074%; --d: 3.305828467924856s; --delay: 5.546510706735599s; opacity: 0.570771;"></div><div class="star" style="width: 0.736476px; height: 0.736476px; top: 96.3792%; left: 0.126271%; --d: 4.2219957885771535s; --delay: 0.11543568944703964s; opacity: 0.4453;"></div><div class="star" style="width: 2.24033px; height: 2.24033px; top: 90.1404%; left: 37.0401%; --d: 4.828931252375715s; --delay: 0.23505628596916828s; opacity: 0.400269;"></div><div class="star" style="width: 2.76867px; height: 2.76867px; top: 5.28172%; left: 66.0049%; --d: 2.1159281975041124s; --delay: 1.1503005159439101s; opacity: 0.727116;"></div><div class="star" style="width: 2.86975px; height: 2.86975px; top: 13.701%; left: 1.82744%; --d: 4.561282151032081s; --delay: 3.8360646476481226s; opacity: 0.746523;"></div><div class="star" style="width: 1.13465px; height: 1.13465px; top: 62.5929%; left: 16.1638%; --d: 5.885355411113993s; --delay: 5.862173419712253s; opacity: 0.225613;"></div><div class="star" style="width: 1.54212px; height: 1.54212px; top: 91.7872%; left: 90.1002%; --d: 4.601595960096571s; --delay: 1.127549524429174s; opacity: 0.443769;"></div><div class="star" style="width: 2.48427px; height: 2.48427px; top: 44.0319%; left: 62.7644%; --d: 5.463836149698867s; --delay: 4.8390148289791775s; opacity: 0.168864;"></div><div class="star" style="width: 1.17179px; height: 1.17179px; top: 83.1223%; left: 44.5889%; --d: 4.373857639282592s; --delay: 2.9597873371914987s; opacity: 0.491739;"></div><div class="star" style="width: 1.63867px; height: 1.63867px; top: 89.1776%; left: 94.2103%; --d: 5.919715198780676s; --delay: 0.27038210676956353s; opacity: 0.379363;"></div><div class="star" style="width: 2.99833px; height: 2.99833px; top: 32.2853%; left: 55.982%; --d: 5.139169441547125s; --delay: 3.011576747337396s; opacity: 0.299599;"></div><div class="star" style="width: 1.2139px; height: 1.2139px; top: 78.2211%; left: 15.0128%; --d: 5.373939079086885s; --delay: 1.191864898142933s; opacity: 0.383628;"></div><div class="star" style="width: 0.70387px; height: 0.70387px; top: 24.7153%; left: 73.9994%; --d: 2.844373328203724s; --delay: 0.8660793336821648s; opacity: 0.30871;"></div><div class="star" style="width: 2.81998px; height: 2.81998px; top: 1.99383%; left: 99.5542%; --d: 3.4933468235419354s; --delay: 1.7383880609355407s; opacity: 0.450375;"></div><div class="star" style="width: 1.71991px; height: 1.71991px; top: 45.4729%; left: 2.29391%; --d: 5.842338289453688s; --delay: 0.2613950053306544s; opacity: 0.551009;"></div><div class="star" style="width: 2.34946px; height: 2.34946px; top: 30.7641%; left: 90.2603%; --d: 4.126215928905713s; --delay: 2.157052795052775s; opacity: 0.524404;"></div><div class="star" style="width: 0.836722px; height: 0.836722px; top: 24.954%; left: 29.2482%; --d: 3.305092943563066s; --delay: 4.5985235300286575s; opacity: 0.576846;"></div><div class="star" style="width: 2.56847px; height: 2.56847px; top: 70.8212%; left: 65.4624%; --d: 2.6940038638627377s; --delay: 3.2588824878538034s; opacity: 0.422803;"></div><div class="star" style="width: 2.62975px; height: 2.62975px; top: 32.7594%; left: 18.0691%; --d: 2.773952262446214s; --delay: 4.9129405483109485s; opacity: 0.271122;"></div><div class="star" style="width: 0.789998px; height: 0.789998px; top: 38.6277%; left: 21.724%; --d: 4.9545618426993885s; --delay: 2.8788102374163316s; opacity: 0.401102;"></div><div class="star" style="width: 2.10538px; height: 2.10538px; top: 66.4626%; left: 55.4355%; --d: 3.1649102076054185s; --delay: 5.8225110392776855s; opacity: 0.577318;"></div><div class="star" style="width: 1.14437px; height: 1.14437px; top: 40.5928%; left: 6.14376%; --d: 3.6337931475105325s; --delay: 4.589978074006141s; opacity: 0.624543;"></div><div class="star" style="width: 1.99754px; height: 1.99754px; top: 40.3941%; left: 52.1404%; --d: 5.082900561652709s; --delay: 1.3375415463417035s; opacity: 0.749318;"></div><div class="star" style="width: 0.875075px; height: 0.875075px; top: 84.0495%; left: 50.0389%; --d: 3.4788174760026784s; --delay: 1.0137328000608563s; opacity: 0.68831;"></div><div class="star" style="width: 1.79928px; height: 1.79928px; top: 14.16%; left: 63.5222%; --d: 3.8754026684726437s; --delay: 1.543253402811199s; opacity: 0.603473;"></div><div class="star" style="width: 2.64115px; height: 2.64115px; top: 18.5282%; left: 22.2762%; --d: 2.2580784028149505s; --delay: 3.040851976542055s; opacity: 0.63787;"></div><div class="star" style="width: 1.72066px; height: 1.72066px; top: 59.4122%; left: 92.2975%; --d: 5.402061376242907s; --delay: 2.4706768717179015s; opacity: 0.55452;"></div><div class="star" style="width: 2.74085px; height: 2.74085px; top: 57.4695%; left: 31.1541%; --d: 2.7675122025043857s; --delay: 1.5671298688075679s; opacity: 0.636301;"></div><div class="star" style="width: 2.84552px; height: 2.84552px; top: 92.1118%; left: 28.3685%; --d: 2.496173772022569s; --delay: 4.498189225674083s; opacity: 0.340907;"></div><div class="star" style="width: 1.41024px; height: 1.41024px; top: 40.8741%; left: 70.6084%; --d: 5.695391915139735s; --delay: 2.9523002819471857s; opacity: 0.166815;"></div><div class="star" style="width: 1.73553px; height: 1.73553px; top: 10.0862%; left: 37.1053%; --d: 2.0860919898408374s; --delay: 5.697705346062834s; opacity: 0.342617;"></div><div class="star" style="width: 1.92317px; height: 1.92317px; top: 37.3312%; left: 56.4777%; --d: 5.986117708139389s; --delay: 3.838412204378587s; opacity: 0.697385;"></div><div class="star" style="width: 1.75187px; height: 1.75187px; top: 42.788%; left: 22.921%; --d: 2.2274783073187416s; --delay: 1.2972930202407638s; opacity: 0.524226;"></div><div class="star" style="width: 1.85771px; height: 1.85771px; top: 35.8678%; left: 76.9701%; --d: 5.367022546695407s; --delay: 1.451402773877519s; opacity: 0.340407;"></div><div class="star" style="width: 2.79311px; height: 2.79311px; top: 90.9049%; left: 90.8629%; --d: 4.569523735881228s; --delay: 3.7590519448605217s; opacity: 0.687772;"></div><div class="star" style="width: 2.49897px; height: 2.49897px; top: 83.761%; left: 6.66836%; --d: 5.968553873778417s; --delay: 4.719349731749152s; opacity: 0.506214;"></div><div class="star" style="width: 2.27408px; height: 2.27408px; top: 58.9232%; left: 89.4251%; --d: 4.157490718786347s; --delay: 1.588039711309918s; opacity: 0.573013;"></div><div class="star" style="width: 0.52998px; height: 0.52998px; top: 71.9007%; left: 40.3557%; --d: 2.0540383304926s; --delay: 4.075734921685569s; opacity: 0.415186;"></div><div class="star" style="width: 0.969459px; height: 0.969459px; top: 99.1771%; left: 64.6708%; --d: 2.3459581043738584s; --delay: 2.284913675816245s; opacity: 0.192822;"></div><div class="star" style="width: 2.27696px; height: 2.27696px; top: 96.5224%; left: 31.1612%; --d: 4.670365723485473s; --delay: 1.0010795412239037s; opacity: 0.713116;"></div><div class="star" style="width: 1.78533px; height: 1.78533px; top: 81.8836%; left: 38.9506%; --d: 4.625051958594548s; --delay: 0.5140462664441405s; opacity: 0.341188;"></div><div class="star" style="width: 1.70266px; height: 1.70266px; top: 98.2265%; left: 76.416%; --d: 4.394158445445312s; --delay: 0.08578100442604941s; opacity: 0.361302;"></div><div class="star" style="width: 2.66294px; height: 2.66294px; top: 99.0509%; left: 18.6526%; --d: 5.835007464628228s; --delay: 5.635135561513988s; opacity: 0.249943;"></div><div class="star" style="width: 2.80584px; height: 2.80584px; top: 41.3418%; left: 30.5338%; --d: 3.3312578502417174s; --delay: 3.1118620893625932s; opacity: 0.745908;"></div><div class="star" style="width: 2.79979px; height: 2.79979px; top: 63.3907%; left: 96.0707%; --d: 3.9081270521222615s; --delay: 0.6917482295151334s; opacity: 0.251427;"></div><div class="star" style="width: 0.93683px; height: 0.93683px; top: 27.8131%; left: 8.86499%; --d: 3.365476464787295s; --delay: 4.748214288872003s; opacity: 0.233518;"></div><div class="star" style="width: 0.670457px; height: 0.670457px; top: 40.4343%; left: 44.3725%; --d: 2.3913595605726634s; --delay: 3.241413459128575s; opacity: 0.702082;"></div><div class="star" style="width: 2.77837px; height: 2.77837px; top: 88.8287%; left: 49.7331%; --d: 2.538967952425214s; --delay: 4.155163056479072s; opacity: 0.352839;"></div><div class="star" style="width: 2.11552px; height: 2.11552px; top: 41.865%; left: 87.068%; --d: 4.153680517407499s; --delay: 1.2589586999748514s; opacity: 0.195101;"></div><div class="star" style="width: 0.954574px; height: 0.954574px; top: 29.2398%; left: 86.2278%; --d: 2.021564732131152s; --delay: 5.354685354470674s; opacity: 0.390434;"></div><div class="star" style="width: 1.36624px; height: 1.36624px; top: 4.91162%; left: 17.4288%; --d: 4.378734956308669s; --delay: 0.27449017956022703s; opacity: 0.580516;"></div><div class="star" style="width: 2.43199px; height: 2.43199px; top: 42.3699%; left: 28.5194%; --d: 3.2950622183683467s; --delay: 3.9564521435684705s; opacity: 0.615737;"></div><div class="star" style="width: 1.91265px; height: 1.91265px; top: 15.1534%; left: 11.3258%; --d: 3.4852160333334137s; --delay: 3.075289707087318s; opacity: 0.368556;"></div><div class="star" style="width: 1.73742px; height: 1.73742px; top: 67.3784%; left: 25.9627%; --d: 3.2509504661186464s; --delay: 0.07691303076152867s; opacity: 0.405776;"></div><div class="star" style="width: 2.06512px; height: 2.06512px; top: 94.2605%; left: 44.4641%; --d: 2.474985131988588s; --delay: 1.6359936311350756s; opacity: 0.489529;"></div><div class="star" style="width: 1.54179px; height: 1.54179px; top: 70.9772%; left: 27.0338%; --d: 4.249907171042587s; --delay: 0.6762631360835873s; opacity: 0.664618;"></div><div class="star" style="width: 0.82262px; height: 0.82262px; top: 77.9559%; left: 68.584%; --d: 4.5191226011234775s; --delay: 3.2738126908706016s; opacity: 0.698718;"></div><div class="star" style="width: 1.22421px; height: 1.22421px; top: 26.167%; left: 52.6446%; --d: 4.973697514229345s; --delay: 4.557928859634971s; opacity: 0.348077;"></div><div class="star" style="width: 1.52755px; height: 1.52755px; top: 67.6956%; left: 28.0588%; --d: 5.2709081788488925s; --delay: 1.631224930799126s; opacity: 0.356465;"></div><div class="star" style="width: 2.56606px; height: 2.56606px; top: 31.2119%; left: 23.4861%; --d: 2.119401038605666s; --delay: 5.0470650267735016s; opacity: 0.713869;"></div><div class="star" style="width: 2.39687px; height: 2.39687px; top: 92.6699%; left: 21.1274%; --d: 3.964720038303949s; --delay: 2.5558393285659173s; opacity: 0.447538;"></div><div class="star" style="width: 2.24162px; height: 2.24162px; top: 47.9867%; left: 57.4047%; --d: 2.1759128972508734s; --delay: 2.776554998115108s; opacity: 0.459866;"></div><div class="star" style="width: 2.51706px; height: 2.51706px; top: 64.4161%; left: 39.9291%; --d: 2.011039064987264s; --delay: 3.812863045546516s; opacity: 0.288111;"></div><div class="star" style="width: 0.991094px; height: 0.991094px; top: 31.6179%; left: 26.5448%; --d: 2.153585633715937s; --delay: 4.944826073435307s; opacity: 0.218928;"></div><div class="star" style="width: 0.874559px; height: 0.874559px; top: 19.4911%; left: 64.6604%; --d: 2.0716722530346576s; --delay: 1.3219349932126752s; opacity: 0.333399;"></div><div class="star" style="width: 1.75192px; height: 1.75192px; top: 34.9541%; left: 87.4772%; --d: 5.867447592167954s; --delay: 4.132137500768882s; opacity: 0.38571;"></div><div class="star" style="width: 1.66271px; height: 1.66271px; top: 84.0056%; left: 92.3026%; --d: 3.2574034669333463s; --delay: 5.11209259775229s; opacity: 0.611371;"></div><div class="star" style="width: 1.50533px; height: 1.50533px; top: 52.1929%; left: 36.8322%; --d: 2.4644958751316643s; --delay: 5.918688531859165s; opacity: 0.384701;"></div><div class="star" style="width: 2.36942px; height: 2.36942px; top: 51.8361%; left: 74.1001%; --d: 5.480605128047495s; --delay: 5.359648533774177s; opacity: 0.173535;"></div><div class="star" style="width: 1.44802px; height: 1.44802px; top: 79.422%; left: 98.6831%; --d: 5.046137984504005s; --delay: 0.38702264463913116s; opacity: 0.556464;"></div><div class="star" style="width: 2.36906px; height: 2.36906px; top: 97.4193%; left: 91.4446%; --d: 4.9276520486380475s; --delay: 2.250989245969941s; opacity: 0.481882;"></div><div class="star" style="width: 0.7587px; height: 0.7587px; top: 26.6749%; left: 10.4395%; --d: 5.048105565581457s; --delay: 1.7498497252130876s; opacity: 0.356174;"></div><div class="star" style="width: 1.31472px; height: 1.31472px; top: 5.0913%; left: 68.7345%; --d: 4.776993928096618s; --delay: 3.519673200354214s; opacity: 0.456474;"></div><div class="star" style="width: 0.706683px; height: 0.706683px; top: 73.6547%; left: 68.4709%; --d: 2.637809476877976s; --delay: 2.3114774091928574s; opacity: 0.470104;"></div><div class="star" style="width: 1.58831px; height: 1.58831px; top: 83.1087%; left: 68.4892%; --d: 2.0524485763411673s; --delay: 0.965786287369206s; opacity: 0.194738;"></div><div class="star" style="width: 1.59734px; height: 1.59734px; top: 79.5599%; left: 10.9734%; --d: 3.6198288262265597s; --delay: 3.7143400632769135s; opacity: 0.41564;"></div><div class="star" style="width: 0.804663px; height: 0.804663px; top: 69.8313%; left: 45.5622%; --d: 2.012748767675956s; --delay: 3.0281905516254612s; opacity: 0.362119;"></div><div class="star" style="width: 0.752527px; height: 0.752527px; top: 42.8423%; left: 93.9135%; --d: 2.109604278714221s; --delay: 2.684729419952518s; opacity: 0.484473;"></div><div class="star" style="width: 2.88155px; height: 2.88155px; top: 86.3306%; left: 94.2753%; --d: 3.397180567264683s; --delay: 2.6441237773162527s; opacity: 0.269933;"></div><div class="star" style="width: 2.46051px; height: 2.46051px; top: 15.4479%; left: 45.43%; --d: 2.4037506122146812s; --delay: 5.099483739153329s; opacity: 0.357896;"></div><div class="star" style="width: 1.67673px; height: 1.67673px; top: 49.0979%; left: 14.1768%; --d: 2.816399917458442s; --delay: 2.078937371861434s; opacity: 0.451135;"></div><div class="star" style="width: 0.556401px; height: 0.556401px; top: 26.3086%; left: 4.66191%; --d: 3.266555053977347s; --delay: 4.662964780139881s; opacity: 0.741866;"></div></div>
+  <div class="globe-ring" style="width:480px;height:480px;top:50%;left:50%;margin:-240px 0 0 -240px;--s:55s;"></div>
+  <div class="globe-ring" style="width:700px;height:700px;top:50%;left:50%;margin:-350px 0 0 -350px;--s:85s;transform:rotate(40deg);"></div>
+  <div class="globe-ring" style="width:950px;height:950px;top:50%;left:50%;margin:-475px 0 0 -475px;--s:115s;transform:rotate(-15deg);"></div>
+
+  <div class="login-card">
+    <div class="login-ornament">🌍</div>
+    <h1 class="login-title">Obeid Family<br>Around the World</h1>
+    <p class="login-sub">Family Heritage Portal</p>
+    <div class="login-divider"></div>
+
+    <label class="login-label" for="site-pw-input">Enter Password</label>
+    <div class="login-input-wrap">
+      <span class="input-icon">🔑</span>
+      <input type="password" id="site-pw-input" class="login-input" placeholder="Enter password to enter" onkeydown="if(event.key==='Enter')doSiteLogin();" autocomplete="off">
+    </div>
+    <div class="login-error-msg" id="login-err-msg">Incorrect password. Please try again.</div>
+    <button class="login-btn" onclick="doSiteLogin()">Enter the Family Tree →</button>
+    <p class="login-footer-txt">Private family access only &nbsp;·&nbsp; Obeid Family © 2025</p>
+  </div>
+</div>
+
+<!-- ==================== TREE PAGE ==================== -->
+<div id="tree-page" style="display: block;">
+  <div class="site-header">
+    <div class="site-header-left">
+      <span class="site-header-icon">👑</span>
+      <span class="site-header-title">Obeid Family Around the World</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+  </div>
+
+  <!-- ALL ORIGINAL CONTENT BELOW, UNCHANGED -->
+
+<div id="app">
+  <div class="toolbar">
+    <!-- Always visible -->
+    <button class="tbtn amber" id="btn-enter-edit" onclick="promptPassword()" style="display: none;">🔒 Edit Mode</button>
+    <!-- Edit mode only -->
+    <button class="tbtn blue" id="btn-save-html" onclick="exportHTML()" style="">💾 Save as HTML</button>
+    <button class="tbtn green" id="btn-load" onclick="document.getElementById('imp').click()" style="">📂 Load file</button>
+    <input type="file" id="imp" accept=".html,.json" style="display:none" onchange="importFile(event)">
+    <button class="tbtn" id="btn-json" onclick="exportJSON()" style="">⬇ Export JSON</button>
+    <button class="tbtn purple" id="btn-reset" onclick="resetLayout()" style="">↺ Reset Layout</button>
+    <button class="tbtn red" id="btn-exit-edit" onclick="exitEditMode()" style="">🔓 Exit Edit Mode</button>
+    <span class="saved-msg" id="saved-msg">✓ Saved!</span>
+  </div>
+
+  <div id="edit-banner" class="show">
+    <span>✏️</span>
+    <span>Edit Mode active — drag the <strong>⠿⠿</strong> handle above any person to move their whole branch · hover to edit / add / delete</span>
+  </div>
+
+  <div class="tree-title">Obeid Family Tree</div>
+  <div class="tree-subtitle" id="tree-subtitle">Edit Mode · Drag ⠿⠿ handle to move any branch · Hover to edit / add / delete</div>
+
+  <div class="legend">
+    <div class="leg"><div class="lb lb-anc"></div> Ancestor</div>
+    <div class="leg"><div class="lb lb-norm"></div> Member</div>
+    <div class="leg"><div class="lb lb-gray"></div> Unknown</div>
+    <div class="leg"><div class="ld"></div> Has note</div>
+  </div>
+
+  <div id="canvas-wrap" class="edit-mode">
+    <div id="canvas-inner" style="width: 2038px; height: 981px;">
+      <svg id="svg-lines" width="2038" height="981"><path d="M1284,69 C1284,99 1131,99 1131,129" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1131,179 C1131,209.5 511,209.5 511,240" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M511,290 C511,280.5 126,280.5 126,271" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M126,321 C126,351 75,351 75,381" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M126,321 C126,378 142,378 142,435" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M511,290 C511,335.5 243,335.5 243,381" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M243,431 C243,461 192,461 192,491" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M243,431 C243,483 262,483 262,535" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M511,290 C511,347.5 328,347.5 328,405" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M328,455 C328,468 327,468 327,481" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M511,290 C511,370.5 423,370.5 423,451" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M423,501 C423,554.5 337,554.5 337,608" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M337,658 C337,683 257,683 257,708" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M337,658 C337,715.5 317,715.5 317,773" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M337,658 C337,746.5 383,746.5 383,835" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M423,501 C423,555 435,555 435,609" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M435,659 C435,679 437,679 437,699" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M511,290 C511,383.5 528,383.5 528,477" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M528,527 C528,535.5 516,535.5 516,544" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M511,290 C511,430.5 612,430.5 612,571" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M612,621 C612,634.5 594,634.5 594,648" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M511,290 C511,486.5 689,486.5 689,683" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M511,290 C511,515.5 754,515.5 754,741" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M754,791 C754,821 703,821 703,851" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M754,791 C754,818.5 812,818.5 812,846" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1131,179 C1131,208.5 664,208.5 664,238" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M664,288 C664,308.5 577,308.5 577,329" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M664,288 C664,339.5 636,339.5 636,391" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M664,288 C664,376 696,376 696,464" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1131,179 C1131,209.5 829,209.5 829,240" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M829,290 C829,315.5 730,315.5 730,341" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M829,290 C829,339.5 802,339.5 802,389" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M829,290 C829,366 862,366 862,442" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M829,290 C829,412 922,412 922,534" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1131,179 C1131,209 934,209 934,239" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1131,179 C1131,206 1168,206 1168,233" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1168,283 C1168,292 1000,292 1000,301" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1000,351 C1000,381 1000,381 1000,411" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1168,283 C1168,308.5 1078,308.5 1078,334" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1168,283 C1168,343.5 1116,343.5 1116,404" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1168,283 C1168,380.5 1172,380.5 1172,478" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1172,528 C1172,558 1121,558 1121,588" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1172,528 C1172,558 1223,558 1223,588" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1168,283 C1168,403 1266,403 1266,523" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1131,179 C1131,210.5 1319,210.5 1319,242" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1319,292 C1319,319 1281,319 1281,346" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1319,292 C1319,352.5 1358,352.5 1358,413" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1131,179 C1131,208.5 1502,208.5 1502,238" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1502,288 C1502,305 1420,305 1420,322" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1502,288 C1502,341 1465,341 1465,394" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1502,288 C1502,366 1531,366 1531,444" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1502,288 C1502,395.5 1603,395.5 1603,503" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1131,179 C1131,211 1688,211 1688,243" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1688,293 C1688,317 1638,317 1638,341" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1638,391 C1638,395.5 1636,395.5 1636,400" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1688,293 C1688,331 1726,331 1726,369" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1726,419 C1726,422.5 1731,422.5 1731,426" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1284,69 C1284,127.5 1870,127.5 1870,186" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1870,236 C1870,263.5 1797,263.5 1797,291" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1870,236 C1870,298.5 1868,298.5 1868,361" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1870,236 C1870,331.5 1933,331.5 1933,427" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path></svg>
+      <div id="nodes-layer"><div class="nbox" data-id="root" style="left: 1239px; top: 19px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person root ancestor"><div class="person-name">Obeid Al eesa Aljassem</div><div class="person-year">1843-1932</div><div class="action-bar"><button>✎ Edit</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button></div><div class="nbox" data-id="n1" style="left: 1086px; top: 129px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Mohammad Obeid Al eesa Aljassem</div><div class="person-year">1866-1975</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a" style="left: 466px; top: 240px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Sobhi Obeid</div><div class="person-year">1912-1981</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a1" style="left: 81px; top: 271px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Alaa Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a1a" style="left: 30px; top: 381px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Usama</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a1b" style="left: 97px; top: 435px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a2" style="left: 198px; top: 381px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Bdr Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u406" style="left: 147px; top: 491px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Tamir</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u407" style="left: 217px; top: 535px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Amir</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a3" style="left: 283px; top: 405px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Dyaa Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u408" style="left: 282px; top: 481px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4" style="left: 378px; top: 451px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Taj Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4a" style="left: 292px; top: 608px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Maher</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4a1" style="left: 212px; top: 708px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Taj Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4a2" style="left: 272px; top: 773px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4a3" style="left: 338px; top: 835px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Ryan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4b" style="left: 390px; top: 609px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u409" style="left: 392px; top: 699px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Maher</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u412" style="left: 483px; top: 477px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Nashat</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u413" style="left: 471px; top: 544px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Ahmad Rami</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u414" style="left: 567px; top: 571px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Emad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u415" style="left: 549px; top: 648px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u416" style="left: 644px; top: 683px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Hossam</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u417" style="left: 709px; top: 741px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Malek</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u418" style="left: 658px; top: 851px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Anas</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u419" style="left: 767px; top: 846px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Abdallah</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1b" style="left: 619px; top: 238px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Yassin Obeid</div><div class="person-year">1914</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u420" style="left: 532px; top: 329px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Ahmad Rami</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u421" style="left: 591px; top: 391px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Rabee</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u422" style="left: 651px; top: 464px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Radwan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c" style="left: 784px; top: 240px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Abd Al kadir Obeid</div><div class="person-year">1916-2000</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c4" style="left: 685px; top: 341px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Adnan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c5" style="left: 757px; top: 389px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Gazwan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c6" style="left: 817px; top: 442px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Zahran</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c7" style="left: 877px; top: 534px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Shallan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1d" style="left: 889px; top: 239px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Sabit Obeid</div><div class="person-year">1920-1955</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e" style="left: 1123px; top: 233px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Mohammad Saleh Obeid</div><div class="person-year">1922</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e1" style="left: 955px; top: 301px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mazen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e1a" style="left: 955px; top: 411px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Ziad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e2" style="left: 1033px; top: 334px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Aymen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e3" style="left: 1071px; top: 404px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mahdi</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e4" style="left: 1127px; top: 478px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Maher</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e4a" style="left: 1076px; top: 588px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Majd</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e4b" style="left: 1178px; top: 588px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Adam</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u405" style="left: 1221px; top: 523px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Yasir</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1f" style="left: 1274px; top: 242px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Nafie Obeid</div><div class="person-year">1926-1985</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1f2" style="left: 1236px; top: 346px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Nizar</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1f3" style="left: 1313px; top: 413px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Nabil</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1g" style="left: 1457px; top: 238px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Abd Alsamad Obeid</div><div class="person-year">1928</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u400" style="left: 1375px; top: 322px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Firas</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u401" style="left: 1420px; top: 394px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Wael</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u402" style="left: 1486px; top: 444px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Jamal</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u403" style="left: 1558px; top: 503px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Anis</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h" style="left: 1643px; top: 243px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor has-note"><div class="person-name">Mohamed Said Obeid</div><div class="person-year">1931-2020</div><div class="person-note-pre" title="Wife: Sanaa Motraji
+Sons and daughters:
+Bashar
+Fadi">📝 Wife: Sanaa Motraj…</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h1" style="left: 1593px; top: 341px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Basher</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h1a" style="left: 1591px; top: 400px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Tim</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h2" style="left: 1681px; top: 369px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person has-note"><div class="person-name">Fadi</div><div class="person-note-pre" title="Wife: 
+Alya Kanaan
+Sons and daughters:
+Danny Obeid
+Sara Obeid">📝 Wife: 
+Alya Kanaan…</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h2a" style="left: 1686px; top: 426px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Danny</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n2" style="left: 1825px; top: 186px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Eissa Obeid</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n2a" style="left: 1752px; top: 291px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Salam</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n2b" style="left: 1823px; top: 361px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Bashar</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n2c" style="left: 1888px; top: 427px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Samir</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PASSWORD OVERLAY -->
+<div class="overlay" id="pw-overlay" style="display: none;" onclick="closePw()"></div>
+<div id="pw-panel" style="display: none;">
+  <div id="pw-icon">🔐</div>
+  <h3>Admin Access</h3>
+  <p>Enter password to enable editing</p>
+  <input type="password" id="pw-input" placeholder="••••••••" maxlength="20" onkeydown="if(event.key==='Enter')checkPw();if(event.key==='Escape')closePw();">
+  <div id="pw-error"></div>
+  <div class="pbtns" style="justify-content:center;margin-top:1rem;">
+    <button class="btn btn-p" onclick="checkPw()">Unlock</button>
+    <button class="btn" onclick="closePw()">Cancel</button>
+  </div>
+</div>
+
+<!-- EDIT PANEL -->
+<div class="overlay" id="overlay" style="display: none;"></div>
+<div class="panel" id="panel" style="display: none;">
+  <h3 id="panel-title">Edit person</h3>
+  <div class="field"><label>Name *</label><input type="text" id="p-name" placeholder="Full name"></div>
+  <div class="field"><label>Year</label><input type="text" id="p-year" placeholder="e.g. 1940-2005"></div>
+  <div class="field"><label>Type</label>
+    <select id="p-type">
+      <option value="normal">Member</option>
+      <option value="ancestor">Ancestor (yellow)</option>
+      <option value="gray">Unknown</option>
+    </select>
+  </div>
+  <div class="field"><label>Note</label><textarea id="p-note" placeholder="Any additional information..."></textarea></div>
+  <div class="pbtns">
+    <button class="btn btn-p" id="btn-save">Save changes</button>
+    <button class="btn" id="btn-cancel">Cancel</button>
+  </div>
+</div>
+
+<script>
+const NW=90,NH=50,HGAP=12,VGAP=60;
+let isEditMode=false;
+let nodeOffsets={"n1a1":{"dx":-12,"dy":-89},"n1a1a":{"dx":-12,"dy":-89},"n1a1b":{"dx":-47,"dy":-35},"n1a2":{"dx":-99,"dy":21},"u406":{"dx":-99,"dy":21},"u407":{"dx":-131,"dy":65},"n1a3":{"dx":-167,"dy":45},"u408":{"dx":-168,"dy":11},"n1a4":{"dx":-327,"dy":91},"n1a4a":{"dx":-362,"dy":138},"n1a4a1":{"dx":-340,"dy":128},"n1a4a2":{"dx":-382,"dy":193},"n1a4a3":{"dx":-418,"dy":255},"n1a4b":{"dx":-468,"dy":139},"u409":{"dx":-466,"dy":119},"u412":{"dx":-477,"dy":117},"u413":{"dx":-489,"dy":74},"u414":{"dx":-495,"dy":211},"u415":{"dx":-513,"dy":178},"u416":{"dx":-520,"dy":323},"u417":{"dx":-608,"dy":381},"u418":{"dx":-608,"dy":381},"u419":{"dx":-601,"dy":376},"n1b":{"dx":-953,"dy":-12},"u420":{"dx":-938,"dy":-31},"u421":{"dx":-981,"dy":31},"u422":{"dx":-1023,"dy":104},"n1c":{"dx":-1145,"dy":-10},"n1c4":{"dx":-1091,"dy":-19},"n1c5":{"dx":-1121,"dy":29},"n1c6":{"dx":-1163,"dy":82},"n1c7":{"dx":-1205,"dy":174},"n1d":{"dx":-1295,"dy":-11},"n1e":{"dx":-1418,"dy":-17},"n1e1":{"dx":-1331,"dy":-59},"n1e1a":{"dx":-1331,"dy":-59},"n1e2":{"dx":-1355,"dy":-26},"n1e3":{"dx":-1419,"dy":44},"n1e4":{"dx":-1516,"dy":118},"n1e4a":{"dx":-1516,"dy":118},"n1e4b":{"dx":-1516,"dy":118},"u405":{"dx":-1575,"dy":163},"n1f":{"dx":-1675,"dy":-8},"n1f2":{"dx":-1662,"dy":-14},"n1f3":{"dx":-1687,"dy":53},"n1g":{"dx":-1798,"dy":-12},"u400":{"dx":-1727,"dy":-38},"u401":{"dx":-1784,"dy":34},"u402":{"dx":-1820,"dy":84},"u403":{"dx":-1850,"dy":143},"n1h":{"dx":-1918,"dy":-7},"n1h1":{"dx":-1917,"dy":-19},"n1h1a":{"dx":-1919,"dy":-70},"n1h2":{"dx":-1931,"dy":9},"n1h2a":{"dx":-1926,"dy":-44},"n2":{"dx":-1991,"dy":46},"n2a":{"dx":-1962,"dy":41},"n2b":{"dx":-1993,"dy":111},"n2c":{"dx":-2030,"dy":177},"n1a":{"dx":-239,"dy":-10},"root":{"dx":-741,"dy":-11},"n1":{"dx":-741,"dy":-11}}, "n1a1a": {"dx": -12, "dy": -89}, "n1a1b": {"dx": -47, "dy": -35}, "n1a2": {"dx": -99, "dy": 21}, "u406": {"dx": -99, "dy": 21}, "u407": {"dx": -131, "dy": 65}, "n1a3": {"dx": -167, "dy": 45}, "u408": {"dx": -168, "dy": 11}, "n1a4": {"dx": -327, "dy": 91}, "n1a4a": {"dx": -362, "dy": 138}, "n1a4a1": {"dx": -340, "dy": 128}, "n1a4a2": {"dx": -382, "dy": 193}, "n1a4a3": {"dx": -418, "dy": 255}, "n1a4b": {"dx": -468, "dy": 139}, "u409": {"dx": -466, "dy": 119}, "u412": {"dx": -477, "dy": 117}, "u413": {"dx": -489, "dy": 74}, "u414": {"dx": -495, "dy": 211}, "u415": {"dx": -513, "dy": 178}, "u416": {"dx": -520, "dy": 323}, "u417": {"dx": -608, "dy": 381}, "u418": {"dx": -608, "dy": 381}, "u419": {"dx": -601, "dy": 376}, "n1b": {"dx": -953, "dy": -12}, "u420": {"dx": -938, "dy": -31}, "u421": {"dx": -981, "dy": 31}, "u422": {"dx": -1023, "dy": 104}, "n1c": {"dx": -1145, "dy": -10}, "n1c4": {"dx": -1091, "dy": -19}, "n1c5": {"dx": -1121, "dy": 29}, "n1c6": {"dx": -1163, "dy": 82}, "n1c7": {"dx": -1205, "dy": 174}, "n1d": {"dx": -1295, "dy": -11}, "n1e": {"dx": -1418, "dy": -17}, "n1e1": {"dx": -1331, "dy": -59}, "n1e1a": {"dx": -1331, "dy": -59}, "n1e2": {"dx": -1355, "dy": -26}, "n1e3": {"dx": -1419, "dy": 44}, "n1e4": {"dx": -1516, "dy": 118}, "n1e4a": {"dx": -1516, "dy": 118}, "n1e4b": {"dx": -1516, "dy": 118}, "u405": {"dx": -1575, "dy": 163}, "n1f": {"dx": -1675, "dy": -8}, "n1f2": {"dx": -1662, "dy": -14}, "n1f3": {"dx": -1687, "dy": 53}, "n1g": {"dx": -1798, "dy": -12}, "u400": {"dx": -1727, "dy": -38}, "u401": {"dx": -1784, "dy": 34}, "u402": {"dx": -1820, "dy": 84}, "u403": {"dx": -1850, "dy": 143}, "n1h": {"dx": -1918, "dy": -7}, "n1h1": {"dx": -1917, "dy": -19}, "n1h1a": {"dx": -1919, "dy": -70}, "n1h2": {"dx": -1931, "dy": 9}, "n1h2a": {"dx": -1926, "dy": -44}, "n2": {"dx": -1991, "dy": 46}, "n2a": {"dx": -1962, "dy": 41}, "n2b": {"dx": -1993, "dy": 111}, "n2c": {"dx": -2030, "dy": 177}, "n1a": {"dx": -239, "dy": -10}, "root": {"dx": -741, "dy": -11}, "n1": {"dx": -741, "dy": -11}};
+
+let tree={"id":"root","name":"Obeid Al eesa Aljassem","year":"1843-1932","note":"","type":"ancestor","children":[{"id":"n1","name":"Mohammad Obeid Al eesa Aljassem","year":"1866-1975","note":"","type":"ancestor","children":[{"id":"n1a","name":"Sobhi Obeid","year":"1912-1981","note":"","type":"ancestor","children":[{"id":"n1a1","name":"Alaa Aldeen","year":"","note":"","type":"normal","children":[{"id":"n1a1a","name":"Usama","year":"","note":"","type":"normal","children":[]},{"id":"n1a1b","name":"Mohammad","year":"","note":"","type":"normal","children":[]}]},{"id":"n1a2","name":"Bdr Aldeen","year":"","note":"","type":"normal","children":[{"id":"u406","name":"Tamir","year":"","note":"","type":"normal","children":[]},{"id":"u407","name":"Amir","year":"","note":"","type":"normal","children":[]}]},{"id":"n1a3","name":"Dyaa Aldeen","year":"","note":"","type":"normal","children":[{"id":"u408","name":"Mohammad","year":"","note":"","type":"normal","children":[]}]},{"id":"n1a4","name":"Taj Aldeen","year":"","note":"","type":"normal","children":[{"id":"n1a4a","name":"Maher","year":"","note":"","type":"normal","children":[{"id":"n1a4a1","name":"Taj Aldeen","year":"","note":"","type":"normal","children":[]},{"id":"n1a4a2","name":"Mohammad","year":"","note":"","type":"normal","children":[]},{"id":"n1a4a3","name":"Ryan","year":"","note":"","type":"normal","children":[]}]},{"id":"n1a4b","name":"Mohammad","year":"","note":"","type":"normal","children":[{"id":"u409","name":"Maher","year":"","note":"","type":"normal","children":[]}]}]},{"id":"u412","name":"Nashat","year":"","note":"","type":"normal","children":[{"id":"u413","name":"Ahmad Rami","year":"","note":"","type":"normal","children":[]}]},{"id":"u414","name":"Emad","year":"","note":"","type":"normal","children":[{"id":"u415","name":"Mohammad","year":"","note":"","type":"normal","children":[]}]},{"id":"u416","name":"Hossam","year":"","note":"","type":"normal","children":[]},{"id":"u417","name":"Malek","year":"","note":"","type":"normal","children":[{"id":"u418","name":"Anas","year":"","note":"","type":"normal","children":[]},{"id":"u419","name":"Abdallah","year":"","note":"","type":"normal","children":[]}]}]},{"id":"n1b","name":"Yassin Obeid","year":"1914","note":"","type":"ancestor","children":[{"id":"u420","name":"Ahmad Rami","year":"","note":"","type":"normal","children":[]},{"id":"u421","name":"Rabee","year":"","note":"","type":"normal","children":[]},{"id":"u422","name":"Radwan","year":"","note":"","type":"normal","children":[]}]},{"id":"n1c","name":"Abd Al kadir Obeid","year":"1916-2000","note":"","type":"ancestor","children":[{"id":"n1c4","name":"Adnan","year":"","note":"","type":"normal","children":[]},{"id":"n1c5","name":"Gazwan","year":"","note":"","type":"normal","children":[]},{"id":"n1c6","name":"Zahran","year":"","note":"","type":"normal","children":[]},{"id":"n1c7","name":"Shallan","year":"","note":"","type":"normal","children":[]}]},{"id":"n1d","name":"Sabit Obeid","year":"1920-1955","note":"","type":"ancestor","children":[]},{"id":"n1e","name":"Mohammad Saleh Obeid","year":"1922","note":"","type":"ancestor","children":[{"id":"n1e1","name":"Mazen","year":"","note":"","type":"normal","children":[{"id":"n1e1a","name":"Ziad","year":"","note":"","type":"normal","children":[]}]},{"id":"n1e2","name":"Aymen","year":"","note":"","type":"normal","children":[]},{"id":"n1e3","name":"Mahdi","year":"","note":"","type":"normal","children":[]},{"id":"n1e4","name":"Maher","year":"","note":"","type":"normal","children":[{"id":"n1e4a","name":"Majd","year":"","note":"","type":"normal","children":[]},{"id":"n1e4b","name":"Adam","year":"","note":"","type":"normal","children":[]}]},{"id":"u405","name":"Yasir","year":"","note":"","type":"normal","children":[]}]},{"id":"n1f","name":"Nafie Obeid","year":"1926-1985","note":"","type":"ancestor","children":[{"id":"n1f2","name":"Nizar","year":"","note":"","type":"normal","children":[]},{"id":"n1f3","name":"Nabil","year":"","note":"","type":"normal","children":[]}]},{"id":"n1g","name":"Abd Alsamad Obeid","year":"1928","note":"","type":"ancestor","children":[{"id":"u400","name":"Firas","year":"","note":"","type":"normal","children":[]},{"id":"u401","name":"Wael","year":"","note":"","type":"normal","children":[]},{"id":"u402","name":"Jamal","year":"","note":"","type":"normal","children":[]},{"id":"u403","name":"Anis","year":"","note":"","type":"normal","children":[]}]},{"id":"n1h","name":"Mohamed Said Obeid","year":"1931-2020","note":"Wife: Sanaa Motraji\nSons and daughters:\nBashar\nFadi","type":"ancestor","children":[{"id":"n1h1","name":"Basher","year":"","note":"","type":"normal","children":[{"id":"n1h1a","name":"Tim","year":"","note":"","type":"normal","children":[]}]},{"id":"n1h2","name":"Fadi","year":"","note":"Wife: \nAlya Kanaan\nSons and daughters:\nDanny Obeid\nSara Obeid","type":"normal","children":[{"id":"n1h2a","name":"Danny","year":"","note":"","type":"normal","children":[]}]}]}]},{"id":"n2","name":"Eissa Obeid","year":"","note":"","type":"ancestor","children":[{"id":"n2a","name":"Salam","year":"","note":"","type":"normal","children":[]},{"id":"n2b","name":"Bashar","year":"","note":"","type":"normal","children":[]},{"id":"n2c","name":"Samir","year":"","note":"","type":"normal","children":[]}]}]};let nid=423,pending=null,editingId=null;
+function gid(){return 'u'+(nid++);}
+function findNode(id,n){if(!n)return null;if(n.id===id)return n;for(const c of n.children||[]){const r=findNode(id,c);if(r)return r;}return null;}
+function findParent(id,n,par){if(!n)return null;if(n.id===id)return par;for(const c of n.children||[]){const r=findParent(id,c,n);if(r)return r;}return null;}
+function getSubtree(node){const ids=[node.id];for(const c of node.children||[])ids.push(...getSubtree(c));return ids;}
+
+// ---- AUTO LAYOUT ----
+let autoPos={};
+function subtreeWidth(n){if(!n.children||!n.children.length)return NW;const cw=n.children.reduce((s,c)=>s+subtreeWidth(c),0)+HGAP*(n.children.length-1);return Math.max(NW,cw);}
+function assignAuto(n,cx,y){autoPos[n.id]={x:cx-NW/2,y};if(!n.children||!n.children.length)return;const tw=n.children.reduce((s,c)=>s+subtreeWidth(c),0)+HGAP*(n.children.length-1);let sx=cx-tw/2;for(const c of n.children){const sw=subtreeWidth(c);assignAuto(c,sx+sw/2,y+NH+VGAP);sx+=sw+HGAP;}}
+function getPos(id){const a=autoPos[id]||{x:0,y:0};const o=nodeOffsets[id]||{dx:0,dy:0};return{x:a.x+o.dx,y:a.y+o.dy};}
+
+// ---- DRAG ----
+let drag=null;
+function startDrag(e,nodeId){
+  if(!isEditMode)return;
+  e.preventDefault();e.stopPropagation();
+  const node=findNode(nodeId,tree);if(!node)return;
+  const ids=getSubtree(node);
+  const snap={};
+  for(const id of ids){const o=nodeOffsets[id]||{dx:0,dy:0};snap[id]={dx:o.dx,dy:o.dy};}
+  const cx=e.touches?e.touches[0].clientX:e.clientX;
+  const cy=e.touches?e.touches[0].clientY:e.clientY;
+  drag={nodeId,ids,sx:cx,sy:cy,snap};
+  document.querySelector(`.nbox[data-id="${nodeId}"]`)?.classList.add('dragging');
+  document.addEventListener('mousemove',onMove,{passive:false});
+  document.addEventListener('mouseup',onUp);
+  document.addEventListener('touchmove',onMove,{passive:false});
+  document.addEventListener('touchend',onUp);
+}
+function onMove(e){
+  if(!drag)return;e.preventDefault();
+  const cx=e.touches?e.touches[0].clientX:e.clientX;
+  const cy=e.touches?e.touches[0].clientY:e.clientY;
+  const dx=cx-drag.sx,dy=cy-drag.sy;
+  for(const id of drag.ids){const s=drag.snap[id];nodeOffsets[id]={dx:s.dx+dx,dy:s.dy+dy};}
+  repaint();
+}
+function onUp(){
+  if(!drag)return;
+  document.querySelector(`.nbox[data-id="${drag.nodeId}"]`)?.classList.remove('dragging');
+  document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);
+  document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onUp);
+  drag=null;sizeCanvas();
+}
+
+// ---- RENDER ----
+function render(){
+  autoPos={};
+  const sw=subtreeWidth(tree);
+  assignAuto(tree,sw/2+30,30);
+  // shift if any node goes left of 30
+  let minX=Infinity;
+  for(const id of Object.keys(autoPos)){const p=getPos(id);if(p.x<minX)minX=p.x;}
+  const shift=minX<30?30-minX:0;
+  if(shift>0)for(const id of Object.keys(autoPos))autoPos[id].x+=shift;
+  buildDOM();
+  sizeCanvas();
+}
+
+function buildDOM(){
+  const layer=document.getElementById('nodes-layer');
+  const svg=document.getElementById('svg-lines');
+  layer.innerHTML='';svg.innerHTML='';
+  function make(node){
+    const pos=getPos(node.id);
+    const wrap=document.createElement('div');
+    wrap.className='nbox';wrap.dataset.id=node.id;
+    wrap.style.cssText=`left:${pos.x}px;top:${pos.y}px;width:${NW}px;position:absolute;`;
+
+    // Drag handle
+    const handle=document.createElement('div');
+    handle.className='drag-handle';handle.title='Drag to move this person + all descendants';
+    handle.innerHTML='⠿⠿';
+    handle.addEventListener('mousedown',e=>startDrag(e,node.id));
+    handle.addEventListener('touchstart',e=>startDrag(e,node.id),{passive:false});
+    wrap.appendChild(handle);
+
+    // Person card
+    let cls='person';
+    if(node.id==='root')cls+=' root';
+    if(node.type==='ancestor')cls+=' ancestor';
+    else if(node.type==='gray')cls+=' gray-node';
+    if(node.note)cls+=' has-note';
+    const card=document.createElement('div');card.className=cls;
+
+    const nm=document.createElement('div');nm.className='person-name';nm.textContent=node.name;card.appendChild(nm);
+    if(node.year){const yr=document.createElement('div');yr.className='person-year';yr.textContent=node.year;card.appendChild(yr);}
+    if(node.note){const nt=document.createElement('div');nt.className='person-note-pre';nt.title=node.note;nt.textContent='📝 '+node.note.slice(0,18)+(node.note.length>18?'…':'');card.appendChild(nt);}
+
+    // Action bar
+    const ab=document.createElement('div');ab.className='action-bar';
+    const eb=document.createElement('button');eb.textContent='✎ Edit';eb.onclick=e=>{e.stopPropagation();if(isEditMode)openEdit(node.id);};ab.appendChild(eb);
+    if(node.id!=='root'){
+      const db=document.createElement('button');db.className='del';db.textContent='× Del';
+      db.onclick=e=>{e.stopPropagation();if(!isEditMode)return;if(!confirm('Delete '+node.name+' and all their descendants?'))return;const p=findParent(node.id,tree,null);if(p){p.children=p.children.filter(c=>c.id!==node.id);render();}};
+      ab.appendChild(db);
+    }
+    card.appendChild(ab);
+    wrap.appendChild(card);
+
+    // Add child (+below)
+    const ac=document.createElement('button');ac.className='add-btn';
+    ac.style.cssText=`bottom:-28px;left:${NW/2-10}px;`;ac.title='Add son';ac.textContent='+';
+    ac.onclick=()=>{if(isEditMode)openAdd('Add son',(name,year,type,note)=>{node.children.push({id:gid(),name,year,note,type,children:[]});render();});};
+    wrap.appendChild(ac);
+
+    // Add sibling (+right)
+    if(node.id!=='root'){
+      const as=document.createElement('button');as.className='add-btn';
+      as.style.cssText=`top:${NH/2-10}px;left:${NW+4}px;`;as.title='Add brother';as.textContent='+';
+      as.onclick=()=>{if(isEditMode)openAdd('Add brother',(name,year,type,note)=>{const p=findParent(node.id,tree,null);if(p){const i=p.children.indexOf(node);p.children.splice(i+1,0,{id:gid(),name,year,note,type,children:[]});render();}});};
+      wrap.appendChild(as);
+    }
+    layer.appendChild(wrap);
+    for(const c of node.children||[])make(c);
+  }
+  make(tree);
+  drawLines();
+}
+
+function drawLines(){
+  const svg=document.getElementById('svg-lines');svg.innerHTML='';
+  function dl(node){
+    const par=findParent(node.id,tree,null);
+    if(par){
+      const pp=getPos(par.id),cp=getPos(node.id);
+      const px=pp.x+NW/2,py=pp.y+NH,cx2=cp.x+NW/2,cy2=cp.y,mid=(py+cy2)/2;
+      const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('d',`M${px},${py} C${px},${mid} ${cx2},${mid} ${cx2},${cy2}`);
+      p.setAttribute('fill','none');
+      p.setAttribute('stroke',node.type==='ancestor'?'#C8A800':'#2c5f8a');
+      p.setAttribute('stroke-width','1.5');p.setAttribute('opacity','0.42');
+      svg.appendChild(p);
+    }
+    for(const c of node.children||[])dl(c);
+  }
+  dl(tree);sizeCanvas();
+}
+
+function repaint(){
+  // Fast update: just move DOM boxes and redraw lines
+  for(const id of Object.keys(autoPos)){
+    const box=document.querySelector(`.nbox[data-id="${id}"]`);
+    if(!box)continue;
+    const pos=getPos(id);
+    box.style.left=pos.x+'px';box.style.top=pos.y+'px';
+  }
+  drawLines();
+}
+
+function sizeCanvas(){
+  let maxX=0,maxY=0;
+  for(const id of Object.keys(autoPos)){const p=getPos(id);maxX=Math.max(maxX,p.x+NW);maxY=Math.max(maxY,p.y+NH);}
+  const w=maxX+60,h=maxY+80;
+  const inner=document.getElementById('canvas-inner');
+  inner.style.width=w+'px';inner.style.height=h+'px';
+  const svg=document.getElementById('svg-lines');
+  svg.setAttribute('width',w);svg.setAttribute('height',h);
+}
+
+// ---- PASSWORD ----
+function promptPassword(){
+  document.getElementById('pw-input').value='';
+  document.getElementById('pw-error').textContent='';
+  document.getElementById('pw-panel').style.display='block';
+  document.getElementById('pw-overlay').style.display='block';
+  setTimeout(()=>document.getElementById('pw-input').focus(),60);
+}
+function closePw(){
+  document.getElementById('pw-panel').style.display='none';
+  document.getElementById('pw-overlay').style.display='none';
+}
+function checkPw(){
+  if(document.getElementById('pw-input').value==='3123950'){
+    closePw();enterEditMode();
+  } else {
+    const err=document.getElementById('pw-error');
+    err.textContent='Incorrect password. Try again.';
+    document.getElementById('pw-input').value='';
+    document.getElementById('pw-input').focus();
+    setTimeout(()=>err.textContent='',3000);
+  }
+}
+function enterEditMode(){
+  isEditMode=true;
+  document.getElementById('canvas-wrap').classList.add('edit-mode');
+  document.getElementById('edit-banner').classList.add('show');
+  document.getElementById('btn-enter-edit').style.display='none';
+  ['btn-save-html','btn-load','btn-json','btn-reset','btn-exit-edit'].forEach(id=>document.getElementById(id).style.display='');
+  document.getElementById('tree-subtitle').textContent='Edit Mode · Drag ⠿⠿ handle to move any branch · Hover to edit / add / delete';
+  render();
+}
+function exitEditMode(){
+  isEditMode=false;
+  document.getElementById('canvas-wrap').classList.remove('edit-mode');
+  document.getElementById('edit-banner').classList.remove('show');
+  document.getElementById('btn-enter-edit').style.display='';
+  ['btn-save-html','btn-load','btn-json','btn-reset','btn-exit-edit'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('tree-subtitle').textContent='View only · Click "Edit Mode" to make changes';
+  render();
+}
+function resetLayout(){if(!confirm('Reset all manual positions back to auto layout?'))return;nodeOffsets={};render();}
+
+// ---- EDIT PANEL ----
+function openAdd(title,cb){
+  editingId=null;pending=cb;
+  document.getElementById('panel-title').textContent=title;
+  ['p-name','p-year','p-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-type').value='normal';
+  document.getElementById('btn-save').textContent='Add';
+  document.getElementById('panel').style.display='block';
+  document.getElementById('overlay').style.display='block';
+  setTimeout(()=>document.getElementById('p-name').focus(),50);
+}
+function openEdit(id){
+  const node=findNode(id,tree);if(!node)return;
+  editingId=id;pending=null;
+  document.getElementById('panel-title').textContent='Edit person';
+  document.getElementById('p-name').value=node.name;
+  document.getElementById('p-year').value=node.year||'';
+  document.getElementById('p-type').value=node.type||'normal';
+  document.getElementById('p-note').value=node.note||'';
+  document.getElementById('btn-save').textContent='Save changes';
+  document.getElementById('panel').style.display='block';
+  document.getElementById('overlay').style.display='block';
+  setTimeout(()=>document.getElementById('p-name').focus(),50);
+}
+function closePanel(){document.getElementById('panel').style.display='none';document.getElementById('overlay').style.display='none';pending=null;editingId=null;}
+function savePanel(){
+  const name=document.getElementById('p-name').value.trim();if(!name){document.getElementById('p-name').focus();return;}
+  const year=document.getElementById('p-year').value.trim();
+  const type=document.getElementById('p-type').value;
+  const note=document.getElementById('p-note').value.trim();
+  if(editingId){const n=findNode(editingId,tree);if(n){n.name=name;n.year=year;n.type=type;n.note=note;}}
+  else if(pending)pending(name,year,type,note);
+  closePanel();render();
+}
+document.getElementById('btn-cancel').onclick=closePanel;
+document.getElementById('overlay').onclick=closePanel;
+document.getElementById('btn-save').onclick=savePanel;
+document.getElementById('p-name').addEventListener('keydown',e=>{if(e.key==='Enter')savePanel();if(e.key==='Escape')closePanel();});
+
+// ---- SAVE / LOAD ----
+function showSaved(){const m=document.getElementById('saved-msg');m.classList.add('show');setTimeout(()=>m.classList.remove('show'),2500);}
+
+function exportHTML(){
+  let html=document.documentElement.outerHTML;
+  html=html.replace(/let tree=\{[\s\S]*?\};[\s\n]*let nid=\d+/,
+    `let tree=${JSON.stringify(tree)};let nid=${nid}`);
+  html=html.replace(/let nodeOffsets=\{[^}]*\}/,`let nodeOffsets=${JSON.stringify(nodeOffsets)}`);
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='family_tree.html';a.click();
+  showSaved();
+}
+function exportJSON(){
+  const blob=new Blob([JSON.stringify({tree,nid,nodeOffsets},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='family_tree_data.json';a.click();
+  showSaved();
+}
+function importFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const text=ev.target.result;
+      if(file.name.endsWith('.json')){
+        const d=JSON.parse(text);
+        if(d.tree){tree=d.tree;nid=d.nid||500;nodeOffsets=d.nodeOffsets||{};render();showSaved();}
+      } else {
+        const m=text.match(/let tree=(\{[\s\S]*?\});[\s\n]*let nid=(\d+)/);
+        const mo=text.match(/let nodeOffsets=(\{[\s\S]*?\})/);
+        if(m){tree=JSON.parse(m[1]);nid=parseInt(m[2]);nodeOffsets=mo?JSON.parse(mo[1]):{};render();showSaved();}
+        else alert('Could not read data. Try JSON export/import.');
+      }
+    }catch(err){alert('Error: '+err.message);}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+render();
+</script>
+
+
+
+</div><!-- end #tree-page -->
+
+<!-- ==================== LOGIN SCRIPT ==================== -->
+<script>
+// Generate stars
+(function(){
+  const c = document.getElementById('stars-container');
+  for(let i = 0; i < 150; i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*6}s;opacity:${0.15+Math.random()*0.6}`;
+    c.appendChild(s);
+  }
+})();
+
+function doSiteLogin() {
+  const inp = document.getElementById('site-pw-input');
+  const err = document.getElementById('login-err-msg');
+  if (inp.value === 'Obeidworld') {
+    err.classList.remove('show');
+    const lp = document.getElementById('login-page');
+    lp.classList.add('fade-out');
+    setTimeout(() => {
+      lp.style.display = 'none';
+      const tp = document.getElementById('tree-page');
+      tp.style.display = 'block';
+      // Trigger the tree render now that the page is visible
+      if (typeof render === 'function') render();
+    }, 900);
+  } else {
+    err.classList.add('show');
+    inp.classList.add('shake');
+    inp.value = '';
+    setTimeout(() => {
+      inp.classList.remove('shake');
+      err.classList.remove('show');
+    }, 3200);
+    inp.focus();
+  }
+}
+
+function doLogout() {
+  // Hide tree, show login
+  document.getElementById('tree-page').style.display = 'none';
+  const lp = document.getElementById('login-page');
+  lp.style.display = 'flex';
+  lp.classList.remove('fade-out');
+  document.getElementById('site-pw-input').value = '';
+  // Exit edit mode if active
+  if (typeof exitEditMode === 'function' && typeof isEditMode !== 'undefined' && isEditMode) {
+    exitEditMode();
+  }
+}
+</script>
+
+
+</body></html>
