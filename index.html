@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Obeid Family Around the World</title>
+
+<!-- ===== LOGIN PAGE STYLES ===== -->
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap');
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Source Sans 3', sans-serif; background: #0d1117; color: #1a1a1a; min-height: 100vh; overflow-x: hidden; }
+
+/* LOGIN PAGE */
+#login-page {
+  position: fixed; inset: 0; z-index: 9000;
+  background: linear-gradient(135deg, #0d1117 0%, #1a2540 45%, #0d2035 100%);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+#login-page.fade-out { opacity: 0; transform: scale(1.05); pointer-events: none; }
+
+/* Stars */
+.stars { position: absolute; inset: 0; overflow: hidden; z-index: 0; }
+.star { position: absolute; background: #fff; border-radius: 50%; animation: twinkle var(--d, 3s) ease-in-out infinite var(--delay, 0s); }
+@keyframes twinkle { 0%,100%{opacity:0.15;transform:scale(1);} 50%{opacity:1;transform:scale(1.4);} }
+
+/* Decorative rings */
+.globe-ring { position: absolute; border-radius: 50%; border: 1px solid rgba(200,168,0,0.12); animation: gspin var(--s,40s) linear infinite; }
+@keyframes gspin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+.login-card {
+  position: relative; z-index: 10; text-align: center;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(200,168,0,0.22);
+  border-radius: 24px; padding: 3rem 3.5rem;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 32px 80px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.07);
+  max-width: 460px; width: 90%;
+}
+.login-ornament {
+  font-size: 56px; margin-bottom: 1rem;
+  animation: glow 2.8s ease-in-out infinite;
+}
+@keyframes glow { 0%,100%{filter:drop-shadow(0 0 10px rgba(200,168,0,0.3));} 50%{filter:drop-shadow(0 0 32px rgba(200,168,0,0.75));} }
+
+.login-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.6rem, 4vw, 2.5rem);
+  font-weight: 700; color: #f5e9c8;
+  line-height: 1.2; margin-bottom: 0.5rem;
+  text-shadow: 0 2px 20px rgba(200,168,0,0.3);
+}
+.login-sub { font-size: 12px; color: rgba(245,233,200,0.45); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 2.2rem; }
+.login-divider { width: 60px; height: 2px; background: linear-gradient(90deg, transparent, #C8A800, transparent); margin: 0 auto 2rem; }
+
+.login-label { font-size: 11px; font-weight: 600; color: rgba(245,233,200,0.55); letter-spacing: 0.1em; text-transform: uppercase; display: block; margin-bottom: 8px; text-align: left; }
+
+.login-input-wrap { position: relative; margin-bottom: 1.4rem; }
+.login-input {
+  width: 100%; padding: 14px 20px 14px 48px;
+  background: rgba(255,255,255,0.06);
+  border: 1.5px solid rgba(200,168,0,0.28);
+  border-radius: 10px; font-size: 15px;
+  color: #f5e9c8; letter-spacing: 0.08em;
+  font-family: 'Source Sans 3', sans-serif;
+  transition: all 0.2s;
+}
+.login-input::placeholder { color: rgba(245,233,200,0.22); }
+.login-input:focus { outline: none; border-color: #C8A800; background: rgba(255,255,255,0.09); box-shadow: 0 0 0 4px rgba(200,168,0,0.13); }
+.login-input.shake { animation: shake 0.4s ease; border-color: #e05555; }
+@keyframes shake { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-8px);} 75%{transform:translateX(8px);} }
+.input-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 18px; opacity: 0.45; }
+
+.login-btn {
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, #C8A800, #e0c200, #C8A800);
+  background-size: 200% 100%;
+  border: none; border-radius: 10px;
+  font-size: 14px; font-weight: 700;
+  color: #1a1200; letter-spacing: 0.08em; text-transform: uppercase;
+  cursor: pointer; transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(200,168,0,0.3);
+}
+.login-btn:hover { background-position: right center; box-shadow: 0 6px 28px rgba(200,168,0,0.55); transform: translateY(-1px); }
+.login-btn:active { transform: translateY(0); }
+
+.login-error-msg { font-size: 12px; color: #ff7070; font-weight: 500; min-height: 18px; margin-bottom: 1rem; text-align: center; opacity: 0; transition: opacity 0.2s; }
+.login-error-msg.show { opacity: 1; }
+.login-footer-txt { margin-top: 1.8rem; font-size: 11px; color: rgba(245,233,200,0.22); letter-spacing: 0.05em; }
+
+/* TREE PAGE */
+#tree-page { display: none; min-height: 100vh; background: #f7f4ef; animation: tpFadeIn 0.6s ease; }
+@keyframes tpFadeIn { from{opacity:0;transform:translateY(8px);} to{opacity:1;transform:translateY(0);} }
+
+.site-header {
+  background: linear-gradient(135deg, #1a2540, #0d2035);
+  color: #f5e9c8; padding: 0.9rem 1.5rem;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.35);
+}
+.site-header-left { display: flex; align-items: center; gap: 9px; }
+.site-header-icon { font-size: 22px; }
+.site-header-title { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 700; letter-spacing: 0.02em; }
+.logout-btn { font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 6px; border: 1px solid rgba(200,168,0,0.35); background: rgba(200,168,0,0.1); color: #C8A800; cursor: pointer; letter-spacing: 0.04em; transition: all 0.15s; }
+.logout-btn:hover { background: rgba(200,168,0,0.22); border-color: #C8A800; }
+</style>
+
+<!-- ===== ORIGINAL TREE STYLES ===== -->
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Source+Sans+3:wght@400;500;600&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Source Sans 3',sans-serif;background:#f7f4ef;color:#1a1a1a;}
+#app{padding:1.2rem 1.5rem 2rem;}
+
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem;align-items:center;}
+.tbtn{font-size:12px;font-weight:600;padding:7px 16px;border-radius:6px;border:1.5px solid #d0c9bc;background:#fff;color:#3a3530;cursor:pointer;transition:all 0.15s;letter-spacing:0.02em;}
+.tbtn:hover{background:#f0ebe3;border-color:#b0a898;}
+.tbtn.blue{background:#2c5f8a;color:#fff;border-color:#2c5f8a;}
+.tbtn.blue:hover{background:#1e4568;}
+.tbtn.green{background:#2d7a5f;color:#fff;border-color:#2d7a5f;}
+.tbtn.green:hover{background:#1e5a44;}
+.tbtn.red{background:#8a2c2c;color:#fff;border-color:#8a2c2c;}
+.tbtn.red:hover{background:#6a1c1c;}
+.tbtn.amber{background:#c47d00;color:#fff;border-color:#c47d00;}
+.tbtn.amber:hover{background:#9a6000;}
+.tbtn.purple{background:#5a3a8a;color:#fff;border-color:#5a3a8a;}
+.tbtn.purple:hover{background:#3e2860;}
+.saved-msg{font-size:11px;color:#2d7a5f;font-weight:600;opacity:0;transition:opacity 0.4s;}
+.saved-msg.show{opacity:1;}
+
+#edit-banner{display:none;background:linear-gradient(90deg,#c47d00,#e09a00);color:#fff;padding:8px 16px;font-size:12px;font-weight:600;border-radius:8px;margin-bottom:1rem;box-shadow:0 2px 10px rgba(196,125,0,0.3);align-items:center;justify-content:center;gap:8px;}
+#edit-banner.show{display:flex;}
+
+.tree-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#2c2017;margin-bottom:0.2rem;}
+.tree-subtitle{font-size:12px;color:#8a7f73;margin-bottom:1rem;}
+.legend{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:1.2rem;}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:#6b6057;}
+.lb{width:12px;height:12px;border-radius:3px;border:1.5px solid;}
+.lb-anc{background:#FFF3B0;border-color:#C8A800;}
+.lb-norm{background:#ddeaf7;border-color:#2c5f8a;}
+.lb-gray{background:#ebe8e3;border-color:#b0a898;}
+.ld{width:7px;height:7px;border-radius:50%;background:#2d7a5f;}
+
+/* CANVAS */
+#canvas-wrap{position:relative;overflow:auto;background:#fff;border-radius:12px;border:1px solid #e0d9cf;box-shadow:0 2px 20px rgba(0,0,0,0.06);}
+#canvas-inner{position:relative;}
+svg#svg-lines{position:absolute;top:0;left:0;pointer-events:none;overflow:visible;z-index:1;}
+#nodes-layer{position:absolute;top:0;left:0;z-index:2;}
+
+/* NODE WRAPPER */
+.nbox{position:absolute;}
+.nbox.dragging{z-index:999!important;}
+.nbox.dragging .person{box-shadow:0 8px 30px rgba(44,95,138,0.45)!important;transform:scale(1.05);}
+
+/* DRAG HANDLE — only visible in edit mode */
+.drag-handle{
+  position:absolute;top:-11px;left:50%;transform:translateX(-50%);
+  width:38px;height:11px;
+  background:#e4eff8;border:1px solid #b0ccdf;border-radius:4px 4px 0 0;
+  cursor:grab;display:none;align-items:center;justify-content:center;
+  font-size:9px;color:#6a8aaa;letter-spacing:3px;user-select:none;
+}
+.drag-handle:active{cursor:grabbing;background:#cce0f0;}
+.edit-mode .drag-handle{display:flex;}
+
+/* PERSON CARD */
+.person{
+  background:#ddeaf7;border:1.5px solid #2c5f8a;border-radius:10px;
+  padding:6px 10px;width:90px;text-align:center;
+  position:relative;user-select:none;
+  transition:box-shadow 0.15s;
+}
+.person.ancestor{background:#FFF3B0;border-color:#C8A800;border-width:2px;}
+.person.gray-node{background:#ebe8e3;border-color:#b0a898;}
+.person.root{border-width:2.5px;box-shadow:0 0 0 3px rgba(44,95,138,0.15);}
+.person.has-note::after{content:'';position:absolute;top:4px;right:4px;width:6px;height:6px;border-radius:50%;background:#2d7a5f;}
+.person-name{font-size:11px;font-weight:600;color:#1a2a3a;line-height:1.3;}
+.person.ancestor .person-name{color:#4a3800;}
+.person.gray-node .person-name{color:#7a7168;}
+.person-year{font-size:9px;color:#5a7a9a;margin-top:2px;font-weight:500;}
+.person.ancestor .person-year{color:#7a6000;}
+.person-note-pre{font-size:9px;color:#2d7a5f;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ACTION BAR — only shown in edit mode on hover */
+.action-bar{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);display:none;gap:2px;background:#fff;border:1px solid #d0c9bc;border-radius:20px;padding:3px 6px;z-index:30;white-space:nowrap;box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+.edit-mode .person:hover .action-bar{display:flex;}
+.action-bar button{background:none;border:none;font-size:10px;cursor:pointer;padding:1px 4px;border-radius:3px;color:#5a5048;font-weight:500;}
+.action-bar button:hover{background:#f0ebe3;color:#1a1a1a;}
+.action-bar .del:hover{color:#9a2020;background:#fce8e8;}
+
+/* ADD BUTTONS — only shown in edit mode */
+.add-btn{width:20px;height:20px;border-radius:50%;border:1.5px dashed #b0a898;background:#f7f4ef;color:#8a7f73;font-size:14px;line-height:1;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all 0.15s;position:absolute;}
+.edit-mode .add-btn{display:flex;}
+.add-btn:hover{border-color:#2c5f8a;color:#2c5f8a;background:#ddeaf7;}
+
+/* PANELS */
+.overlay{position:fixed;inset:0;background:rgba(26,18,10,0.4);z-index:99;backdrop-filter:blur(2px);}
+.panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:1px solid #d0c9bc;border-radius:14px;padding:1.6rem;width:310px;z-index:100;box-shadow:0 16px 48px rgba(0,0,0,0.18);}
+.panel h3{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:1.2rem;color:#2c2017;}
+.field{margin-bottom:12px;}
+.field label{font-size:11px;font-weight:600;color:#6b6057;display:block;margin-bottom:4px;letter-spacing:0.04em;text-transform:uppercase;}
+.field input,.field textarea,.field select{width:100%;padding:8px 10px;border-radius:7px;border:1.5px solid #d0c9bc;font-size:13px;background:#faf8f5;color:#1a1a1a;font-family:'Source Sans 3',sans-serif;transition:border-color 0.15s;}
+.field textarea{resize:vertical;min-height:70px;line-height:1.6;}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:#2c5f8a;background:#fff;box-shadow:0 0 0 3px rgba(44,95,138,0.1);}
+.pbtns{display:flex;gap:8px;margin-top:1.2rem;}
+.btn{font-size:12px;font-weight:600;padding:8px 18px;border-radius:7px;border:1.5px solid #d0c9bc;background:#fff;color:#3a3530;cursor:pointer;}
+.btn:hover{background:#f0ebe3;}
+.btn-p{background:#2c5f8a;color:#fff;border-color:#2c5f8a;}
+.btn-p:hover{background:#1e4568;}
+
+/* PASSWORD PANEL */
+#pw-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border:1px solid #d0c9bc;border-radius:14px;padding:2rem;width:300px;z-index:100;box-shadow:0 16px 48px rgba(0,0,0,0.22);text-align:center;}
+#pw-panel h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:0.4rem;color:#2c2017;}
+#pw-panel p{font-size:12px;color:#8a7f73;margin-bottom:1.2rem;}
+#pw-icon{font-size:38px;margin-bottom:0.8rem;}
+#pw-input{width:100%;padding:10px 14px;border-radius:8px;border:1.5px solid #d0c9bc;font-size:18px;text-align:center;letter-spacing:0.2em;font-family:'Source Sans 3',sans-serif;background:#faf8f5;}
+#pw-input:focus{outline:none;border-color:#2c5f8a;box-shadow:0 0 0 3px rgba(44,95,138,0.1);}
+#pw-error{font-size:11px;color:#9a2020;margin-top:8px;min-height:16px;font-weight:600;}
+
+</style>
+</head>
+<body>
+
+<!-- ==================== LOGIN PAGE ==================== -->
+<div id="login-page">
+  <div class="stars" id="stars-container"></div>
+  <div class="globe-ring" style="width:480px;height:480px;top:50%;left:50%;margin:-240px 0 0 -240px;--s:55s;"></div>
+  <div class="globe-ring" style="width:700px;height:700px;top:50%;left:50%;margin:-350px 0 0 -350px;--s:85s;transform:rotate(40deg);"></div>
+  <div class="globe-ring" style="width:950px;height:950px;top:50%;left:50%;margin:-475px 0 0 -475px;--s:115s;transform:rotate(-15deg);"></div>
+
+  <div class="login-card">
+    <div class="login-ornament">🌍</div>
+    <h1 class="login-title">Obeid Family<br>Around the World</h1>
+    <p class="login-sub">Family Heritage Portal</p>
+    <div class="login-divider"></div>
+
+    <label class="login-label" for="site-pw-input">Enter Password</label>
+    <div class="login-input-wrap">
+      <span class="input-icon">🔑</span>
+      <input type="password" id="site-pw-input" class="login-input"
+        placeholder="Enter password to enter"
+        onkeydown="if(event.key==='Enter')doSiteLogin();"
+        autocomplete="off"/>
+    </div>
+    <div class="login-error-msg" id="login-err-msg">Incorrect password. Please try again.</div>
+    <button class="login-btn" onclick="doSiteLogin()">Enter the Family Tree &rarr;</button>
+    <p class="login-footer-txt">Private family access only &nbsp;·&nbsp; Obeid Family &copy; 2025</p>
+  </div>
+</div>
+
+<!-- ==================== TREE PAGE ==================== -->
+<div id="tree-page">
+  <div class="site-header">
+    <div class="site-header-left">
+      <span class="site-header-icon">👑</span>
+      <span class="site-header-title">Obeid Family Around the World</span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">🚪 Logout</button>
+  </div>
+
+  <!-- ALL ORIGINAL CONTENT BELOW, UNCHANGED -->
+
+<div id="app">
+  <div class="toolbar">
+    <!-- Always visible -->
+    <button class="tbtn amber" id="btn-enter-edit" onclick="promptPassword()">🔒 Edit Mode</button>
+    <!-- Edit mode only -->
+    <button class="tbtn blue" id="btn-save-html" onclick="exportHTML()" style="display:none">💾 Save as HTML</button>
+    <button class="tbtn green" id="btn-load" onclick="document.getElementById('imp').click()" style="display:none">📂 Load file</button>
+    <input type="file" id="imp" accept=".html,.json" style="display:none" onchange="importFile(event)">
+    <button class="tbtn" id="btn-json" onclick="exportJSON()" style="display:none">⬇ Export JSON</button>
+    <button class="tbtn purple" id="btn-reset" onclick="resetLayout()" style="display:none">↺ Reset Layout</button>
+    <button class="tbtn red" id="btn-exit-edit" onclick="exitEditMode()" style="display:none">🔓 Exit Edit Mode</button>
+    <span class="saved-msg" id="saved-msg">✓ Saved!</span>
+  </div>
+
+  <div id="edit-banner">
+    <span>✏️</span>
+    <span>Edit Mode active — drag the <strong>⠿⠿</strong> handle above any person to move their whole branch · hover to edit / add / delete</span>
+  </div>
+
+  <div class="tree-title">Obeid Family Tree</div>
+  <div class="tree-subtitle" id="tree-subtitle">View only · Click "Edit Mode" to make changes</div>
+
+  <div class="legend">
+    <div class="leg"><div class="lb lb-anc"></div> Ancestor</div>
+    <div class="leg"><div class="lb lb-norm"></div> Member</div>
+    <div class="leg"><div class="lb lb-gray"></div> Unknown</div>
+    <div class="leg"><div class="ld"></div> Has note</div>
+  </div>
+
+  <div id="canvas-wrap">
+    <div id="canvas-inner" style="width: 2657px; height: 987px;">
+      <svg id="svg-lines" width="2657" height="987"><path d="M1903,75 C1903,105 1750,105 1750,135" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1750,185 C1750,215.5 1130,215.5 1130,246" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1130,296 C1130,286.5 745,286.5 745,277" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M745,327 C745,357 694,357 694,387" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M745,327 C745,384 761,384 761,441" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1130,296 C1130,341.5 862,341.5 862,387" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M862,437 C862,467 811,467 811,497" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M862,437 C862,489 881,489 881,541" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1130,296 C1130,353.5 947,353.5 947,411" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M947,461 C947,474 946,474 946,487" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1130,296 C1130,376.5 1042,376.5 1042,457" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1042,507 C1042,560.5 956,560.5 956,614" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M956,664 C956,689 876,689 876,714" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M956,664 C956,721.5 936,721.5 936,779" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M956,664 C956,752.5 1002,752.5 1002,841" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1042,507 C1042,561 1054,561 1054,615" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1054,665 C1054,685 1056,685 1056,705" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1130,296 C1130,389.5 1147,389.5 1147,483" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1147,533 C1147,541.5 1135,541.5 1135,550" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1130,296 C1130,436.5 1231,436.5 1231,577" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1231,627 C1231,640.5 1213,640.5 1213,654" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1130,296 C1130,492.5 1308,492.5 1308,689" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1130,296 C1130,521.5 1373,521.5 1373,747" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1373,797 C1373,827 1322,827 1322,857" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1373,797 C1373,824.5 1431,824.5 1431,852" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1750,185 C1750,214.5 1283,214.5 1283,244" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1283,294 C1283,314.5 1196,314.5 1196,335" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1283,294 C1283,345.5 1255,345.5 1255,397" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1283,294 C1283,382 1315,382 1315,470" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1750,185 C1750,215.5 1448,215.5 1448,246" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1448,296 C1448,321.5 1349,321.5 1349,347" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1448,296 C1448,345.5 1421,345.5 1421,395" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1448,296 C1448,372 1481,372 1481,448" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1448,296 C1448,418 1541,418 1541,540" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1750,185 C1750,215 1553,215 1553,245" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1750,185 C1750,212 1787,212 1787,239" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1787,289 C1787,298 1619,298 1619,307" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1619,357 C1619,387 1619,387 1619,417" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1787,289 C1787,314.5 1697,314.5 1697,340" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1787,289 C1787,349.5 1735,349.5 1735,410" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1787,289 C1787,386.5 1791,386.5 1791,484" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1791,534 C1791,564 1740,564 1740,594" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1791,534 C1791,564 1842,564 1842,594" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1787,289 C1787,409 1885,409 1885,529" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1750,185 C1750,216.5 1938,216.5 1938,248" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M1938,298 C1938,325 1900,325 1900,352" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1938,298 C1938,358.5 1977,358.5 1977,419" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1750,185 C1750,214.5 2121,214.5 2121,244" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M2121,294 C2121,311 2039,311 2039,328" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M2121,294 C2121,347 2084,347 2084,400" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M2121,294 C2121,372 2150,372 2150,450" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M2121,294 C2121,401.5 2222,401.5 2222,509" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1750,185 C1750,217 2307,217 2307,249" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M2307,299 C2307,323 2257,323 2257,347" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M2257,397 C2257,401.5 2255,401.5 2255,406" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M2307,299 C2307,337 2345,337 2345,375" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M2345,425 C2345,428.5 2350,428.5 2350,432" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M1903,75 C1903,133.5 2489,133.5 2489,192" fill="none" stroke="#C8A800" stroke-width="1.5" opacity="0.42"></path><path d="M2489,242 C2489,269.5 2416,269.5 2416,297" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M2489,242 C2489,304.5 2487,304.5 2487,367" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path><path d="M2489,242 C2489,337.5 2552,337.5 2552,433" fill="none" stroke="#2c5f8a" stroke-width="1.5" opacity="0.42"></path></svg>
+      <div id="nodes-layer"><div class="nbox" data-id="root" style="left: 1858px; top: 25px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person root ancestor"><div class="person-name">Obeid Al eesa Aljassem</div><div class="person-year">1843-1932</div><div class="action-bar"><button>✎ Edit</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button></div><div class="nbox" data-id="n1" style="left: 1705px; top: 135px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Mohammad Obeid Al eesa Aljassem</div><div class="person-year">1866-1975</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a" style="left: 1085px; top: 246px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Sobhi Obeid</div><div class="person-year">1912-1981</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a1" style="left: 700px; top: 277px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Alaa Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a1a" style="left: 649px; top: 387px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Usama</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a1b" style="left: 716px; top: 441px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a2" style="left: 817px; top: 387px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Bdr Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u406" style="left: 766px; top: 497px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Tamir</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u407" style="left: 836px; top: 541px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Amir</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a3" style="left: 902px; top: 411px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Dyaa Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u408" style="left: 901px; top: 487px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4" style="left: 997px; top: 457px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Taj Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4a" style="left: 911px; top: 614px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Maher</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4a1" style="left: 831px; top: 714px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Taj Aldeen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4a2" style="left: 891px; top: 779px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4a3" style="left: 957px; top: 841px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Ryan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1a4b" style="left: 1009px; top: 615px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u409" style="left: 1011px; top: 705px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Maher</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u412" style="left: 1102px; top: 483px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Nashat</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u413" style="left: 1090px; top: 550px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Ahmad Rami</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u414" style="left: 1186px; top: 577px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Emad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u415" style="left: 1168px; top: 654px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mohammad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u416" style="left: 1263px; top: 689px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Hossam</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u417" style="left: 1328px; top: 747px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Malek</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u418" style="left: 1277px; top: 857px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Anas</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u419" style="left: 1386px; top: 852px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Abdallah</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1b" style="left: 1238px; top: 244px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Yassin Obeid</div><div class="person-year">1914</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u420" style="left: 1151px; top: 335px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Ahmad Rami</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u421" style="left: 1210px; top: 397px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Rabee</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u422" style="left: 1270px; top: 470px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Radwan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c" style="left: 1403px; top: 246px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Abd Al kadir Obeid</div><div class="person-year">1916-2000</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c4" style="left: 1304px; top: 347px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Adnan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c5" style="left: 1376px; top: 395px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Gazwan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c6" style="left: 1436px; top: 448px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Zahran</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1c7" style="left: 1496px; top: 540px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Shallan</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1d" style="left: 1508px; top: 245px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Sabit Obeid</div><div class="person-year">1920-1955</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e" style="left: 1742px; top: 239px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Mohammad Saleh Obeid</div><div class="person-year">1922</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e1" style="left: 1574px; top: 307px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mazen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e1a" style="left: 1574px; top: 417px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Ziad</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e2" style="left: 1652px; top: 340px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Aymen</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e3" style="left: 1690px; top: 410px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Mahdi</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e4" style="left: 1746px; top: 484px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Maher</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e4a" style="left: 1695px; top: 594px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Majd</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1e4b" style="left: 1797px; top: 594px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Adam</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u405" style="left: 1840px; top: 529px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Yasir</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1f" style="left: 1893px; top: 248px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Nafie Obeid</div><div class="person-year">1926-1985</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1f2" style="left: 1855px; top: 352px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Nizar</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1f3" style="left: 1932px; top: 419px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Nabil</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1g" style="left: 2076px; top: 244px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Abd Alsamad Obeid</div><div class="person-year">1928</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u400" style="left: 1994px; top: 328px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Firas</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u401" style="left: 2039px; top: 400px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Wael</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u402" style="left: 2105px; top: 450px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Jamal</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="u403" style="left: 2177px; top: 509px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Anis</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h" style="left: 2262px; top: 249px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Mohamed Said Obeid</div><div class="person-year">1931-2020</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h1" style="left: 2212px; top: 347px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Basher</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h1a" style="left: 2210px; top: 406px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Tim</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h2" style="left: 2300px; top: 375px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Fadi</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n1h2a" style="left: 2305px; top: 432px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Danny</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n2" style="left: 2444px; top: 192px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person ancestor"><div class="person-name">Eissa Obeid</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n2a" style="left: 2371px; top: 297px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Salam</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n2b" style="left: 2442px; top: 367px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Bashar</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div><div class="nbox" data-id="n2c" style="left: 2507px; top: 433px; width: 90px; position: absolute;"><div class="drag-handle" title="Drag to move this person + all descendants">⠿⠿</div><div class="person"><div class="person-name">Samir</div><div class="action-bar"><button>✎ Edit</button><button class="del">× Del</button></div></div><button class="add-btn" style="bottom: -28px; left: 35px;" title="Add son">+</button><button class="add-btn" style="top: 15px; left: 94px;" title="Add brother">+</button></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PASSWORD OVERLAY -->
+<div class="overlay" id="pw-overlay" style="display: none;" onclick="closePw()"></div>
+<div id="pw-panel" style="display: none;">
+  <div id="pw-icon">🔐</div>
+  <h3>Admin Access</h3>
+  <p>Enter password to enable editing</p>
+  <input type="password" id="pw-input" placeholder="••••••••" maxlength="20" onkeydown="if(event.key==='Enter')checkPw();if(event.key==='Escape')closePw();">
+  <div id="pw-error"></div>
+  <div class="pbtns" style="justify-content:center;margin-top:1rem;">
+    <button class="btn btn-p" onclick="checkPw()">Unlock</button>
+    <button class="btn" onclick="closePw()">Cancel</button>
+  </div>
+</div>
+
+<!-- EDIT PANEL -->
+<div class="overlay" id="overlay" style="display: none;"></div>
+<div class="panel" id="panel" style="display: none;">
+  <h3 id="panel-title">Add son</h3>
+  <div class="field"><label>Name *</label><input type="text" id="p-name" placeholder="Full name"></div>
+  <div class="field"><label>Year</label><input type="text" id="p-year" placeholder="e.g. 1940-2005"></div>
+  <div class="field"><label>Type</label>
+    <select id="p-type">
+      <option value="normal">Member</option>
+      <option value="ancestor">Ancestor (yellow)</option>
+      <option value="gray">Unknown</option>
+    </select>
+  </div>
+  <div class="field"><label>Note</label><textarea id="p-note" placeholder="Any additional information..."></textarea></div>
+  <div class="pbtns">
+    <button class="btn btn-p" id="btn-save">Add</button>
+    <button class="btn" id="btn-cancel">Cancel</button>
+  </div>
+</div>
+
+<script>
+const NW=90,NH=50,HGAP=12,VGAP=60;
+let isEditMode=false;
+let nodeOffsets={"n1a1": {"dx": -12, "dy": -89}, "n1a1a": {"dx": -12, "dy": -89}, "n1a1b": {"dx": -47, "dy": -35}, "n1a2": {"dx": -99, "dy": 21}, "u406": {"dx": -99, "dy": 21}, "u407": {"dx": -131, "dy": 65}, "n1a3": {"dx": -167, "dy": 45}, "u408": {"dx": -168, "dy": 11}, "n1a4": {"dx": -327, "dy": 91}, "n1a4a": {"dx": -362, "dy": 138}, "n1a4a1": {"dx": -340, "dy": 128}, "n1a4a2": {"dx": -382, "dy": 193}, "n1a4a3": {"dx": -418, "dy": 255}, "n1a4b": {"dx": -468, "dy": 139}, "u409": {"dx": -466, "dy": 119}, "u412": {"dx": -477, "dy": 117}, "u413": {"dx": -489, "dy": 74}, "u414": {"dx": -495, "dy": 211}, "u415": {"dx": -513, "dy": 178}, "u416": {"dx": -520, "dy": 323}, "u417": {"dx": -608, "dy": 381}, "u418": {"dx": -608, "dy": 381}, "u419": {"dx": -601, "dy": 376}, "n1b": {"dx": -953, "dy": -12}, "u420": {"dx": -938, "dy": -31}, "u421": {"dx": -981, "dy": 31}, "u422": {"dx": -1023, "dy": 104}, "n1c": {"dx": -1145, "dy": -10}, "n1c4": {"dx": -1091, "dy": -19}, "n1c5": {"dx": -1121, "dy": 29}, "n1c6": {"dx": -1163, "dy": 82}, "n1c7": {"dx": -1205, "dy": 174}, "n1d": {"dx": -1295, "dy": -11}, "n1e": {"dx": -1418, "dy": -17}, "n1e1": {"dx": -1331, "dy": -59}, "n1e1a": {"dx": -1331, "dy": -59}, "n1e2": {"dx": -1355, "dy": -26}, "n1e3": {"dx": -1419, "dy": 44}, "n1e4": {"dx": -1516, "dy": 118}, "n1e4a": {"dx": -1516, "dy": 118}, "n1e4b": {"dx": -1516, "dy": 118}, "u405": {"dx": -1575, "dy": 163}, "n1f": {"dx": -1675, "dy": -8}, "n1f2": {"dx": -1662, "dy": -14}, "n1f3": {"dx": -1687, "dy": 53}, "n1g": {"dx": -1798, "dy": -12}, "u400": {"dx": -1727, "dy": -38}, "u401": {"dx": -1784, "dy": 34}, "u402": {"dx": -1820, "dy": 84}, "u403": {"dx": -1850, "dy": 143}, "n1h": {"dx": -1918, "dy": -7}, "n1h1": {"dx": -1917, "dy": -19}, "n1h1a": {"dx": -1919, "dy": -70}, "n1h2": {"dx": -1931, "dy": 9}, "n1h2a": {"dx": -1926, "dy": -44}, "n2": {"dx": -1991, "dy": 46}, "n2a": {"dx": -1962, "dy": 41}, "n2b": {"dx": -1993, "dy": 111}, "n2c": {"dx": -2030, "dy": 177}, "n1a": {"dx": -239, "dy": -10}, "root": {"dx": -741, "dy": -11}, "n1": {"dx": -741, "dy": -11}};
+
+let tree={"id": "root", "name": "Obeid Al eesa Aljassem", "year": "1843-1932", "note": "", "type": "ancestor", "children": [{"id": "n1", "name": "Mohammad Obeid Al eesa Aljassem", "year": "1866-1975", "note": "", "type": "ancestor", "children": [{"id": "n1a", "name": "Sobhi Obeid", "year": "1912-1981", "note": "", "type": "ancestor", "children": [{"id": "n1a1", "name": "Alaa Aldeen", "year": "", "note": "", "type": "normal", "children": [{"id": "n1a1a", "name": "Usama", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1a1b", "name": "Mohammad", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1a2", "name": "Bdr Aldeen", "year": "", "note": "", "type": "normal", "children": [{"id": "u406", "name": "Tamir", "year": "", "note": "", "type": "normal", "children": []}, {"id": "u407", "name": "Amir", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1a3", "name": "Dyaa Aldeen", "year": "", "note": "", "type": "normal", "children": [{"id": "u408", "name": "Mohammad", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1a4", "name": "Taj Aldeen", "year": "", "note": "", "type": "normal", "children": [{"id": "n1a4a", "name": "Maher", "year": "", "note": "", "type": "normal", "children": [{"id": "n1a4a1", "name": "Taj Aldeen", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1a4a2", "name": "Mohammad", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1a4a3", "name": "Ryan", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1a4b", "name": "Mohammad", "year": "", "note": "", "type": "normal", "children": [{"id": "u409", "name": "Maher", "year": "", "note": "", "type": "normal", "children": []}]}]}, {"id": "u412", "name": "Nashat", "year": "", "note": "", "type": "normal", "children": [{"id": "u413", "name": "Ahmad Rami", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "u414", "name": "Emad", "year": "", "note": "", "type": "normal", "children": [{"id": "u415", "name": "Mohammad", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "u416", "name": "Hossam", "year": "", "note": "", "type": "normal", "children": []}, {"id": "u417", "name": "Malek", "year": "", "note": "", "type": "normal", "children": [{"id": "u418", "name": "Anas", "year": "", "note": "", "type": "normal", "children": []}, {"id": "u419", "name": "Abdallah", "year": "", "note": "", "type": "normal", "children": []}]}]}, {"id": "n1b", "name": "Yassin Obeid", "year": "1914", "note": "", "type": "ancestor", "children": [{"id": "u420", "name": "Ahmad Rami", "year": "", "note": "", "type": "normal", "children": []}, {"id": "u421", "name": "Rabee", "year": "", "note": "", "type": "normal", "children": []}, {"id": "u422", "name": "Radwan", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1c", "name": "Abd Al kadir Obeid", "year": "1916-2000", "note": "", "type": "ancestor", "children": [{"id": "n1c4", "name": "Adnan", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1c5", "name": "Gazwan", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1c6", "name": "Zahran", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1c7", "name": "Shallan", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1d", "name": "Sabit Obeid", "year": "1920-1955", "note": "", "type": "ancestor", "children": []}, {"id": "n1e", "name": "Mohammad Saleh Obeid", "year": "1922", "note": "", "type": "ancestor", "children": [{"id": "n1e1", "name": "Mazen", "year": "", "note": "", "type": "normal", "children": [{"id": "n1e1a", "name": "Ziad", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1e2", "name": "Aymen", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1e3", "name": "Mahdi", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1e4", "name": "Maher", "year": "", "note": "", "type": "normal", "children": [{"id": "n1e4a", "name": "Majd", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1e4b", "name": "Adam", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "u405", "name": "Yasir", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1f", "name": "Nafie Obeid", "year": "1926-1985", "note": "", "type": "ancestor", "children": [{"id": "n1f2", "name": "Nizar", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n1f3", "name": "Nabil", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1g", "name": "Abd Alsamad Obeid", "year": "1928", "note": "", "type": "ancestor", "children": [{"id": "u400", "name": "Firas", "year": "", "note": "", "type": "normal", "children": []}, {"id": "u401", "name": "Wael", "year": "", "note": "", "type": "normal", "children": []}, {"id": "u402", "name": "Jamal", "year": "", "note": "", "type": "normal", "children": []}, {"id": "u403", "name": "Anis", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1h", "name": "Mohamed Said Obeid", "year": "1931-2020", "note": "", "type": "ancestor", "children": [{"id": "n1h1", "name": "Basher", "year": "", "note": "", "type": "normal", "children": [{"id": "n1h1a", "name": "Tim", "year": "", "note": "", "type": "normal", "children": []}]}, {"id": "n1h2", "name": "Fadi", "year": "", "note": "", "type": "normal", "children": [{"id": "n1h2a", "name": "Danny", "year": "", "note": "", "type": "normal", "children": []}]}]}]}, {"id": "n2", "name": "Eissa Obeid", "year": "", "note": "", "type": "ancestor", "children": [{"id": "n2a", "name": "Salam", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n2b", "name": "Bashar", "year": "", "note": "", "type": "normal", "children": []}, {"id": "n2c", "name": "Samir", "year": "", "note": "", "type": "normal", "children": []}]}]};let nid=423,pending=null,editingId=null;
+function gid(){return 'u'+(nid++);}
+function findNode(id,n){if(!n)return null;if(n.id===id)return n;for(const c of n.children||[]){const r=findNode(id,c);if(r)return r;}return null;}
+function findParent(id,n,par){if(!n)return null;if(n.id===id)return par;for(const c of n.children||[]){const r=findParent(id,c,n);if(r)return r;}return null;}
+function getSubtree(node){const ids=[node.id];for(const c of node.children||[])ids.push(...getSubtree(c));return ids;}
+
+// ---- AUTO LAYOUT ----
+let autoPos={};
+function subtreeWidth(n){if(!n.children||!n.children.length)return NW;const cw=n.children.reduce((s,c)=>s+subtreeWidth(c),0)+HGAP*(n.children.length-1);return Math.max(NW,cw);}
+function assignAuto(n,cx,y){autoPos[n.id]={x:cx-NW/2,y};if(!n.children||!n.children.length)return;const tw=n.children.reduce((s,c)=>s+subtreeWidth(c),0)+HGAP*(n.children.length-1);let sx=cx-tw/2;for(const c of n.children){const sw=subtreeWidth(c);assignAuto(c,sx+sw/2,y+NH+VGAP);sx+=sw+HGAP;}}
+function getPos(id){const a=autoPos[id]||{x:0,y:0};const o=nodeOffsets[id]||{dx:0,dy:0};return{x:a.x+o.dx,y:a.y+o.dy};}
+
+// ---- DRAG ----
+let drag=null;
+function startDrag(e,nodeId){
+  if(!isEditMode)return;
+  e.preventDefault();e.stopPropagation();
+  const node=findNode(nodeId,tree);if(!node)return;
+  const ids=getSubtree(node);
+  const snap={};
+  for(const id of ids){const o=nodeOffsets[id]||{dx:0,dy:0};snap[id]={dx:o.dx,dy:o.dy};}
+  const cx=e.touches?e.touches[0].clientX:e.clientX;
+  const cy=e.touches?e.touches[0].clientY:e.clientY;
+  drag={nodeId,ids,sx:cx,sy:cy,snap};
+  document.querySelector(`.nbox[data-id="${nodeId}"]`)?.classList.add('dragging');
+  document.addEventListener('mousemove',onMove,{passive:false});
+  document.addEventListener('mouseup',onUp);
+  document.addEventListener('touchmove',onMove,{passive:false});
+  document.addEventListener('touchend',onUp);
+}
+function onMove(e){
+  if(!drag)return;e.preventDefault();
+  const cx=e.touches?e.touches[0].clientX:e.clientX;
+  const cy=e.touches?e.touches[0].clientY:e.clientY;
+  const dx=cx-drag.sx,dy=cy-drag.sy;
+  for(const id of drag.ids){const s=drag.snap[id];nodeOffsets[id]={dx:s.dx+dx,dy:s.dy+dy};}
+  repaint();
+}
+function onUp(){
+  if(!drag)return;
+  document.querySelector(`.nbox[data-id="${drag.nodeId}"]`)?.classList.remove('dragging');
+  document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp);
+  document.removeEventListener('touchmove',onMove);document.removeEventListener('touchend',onUp);
+  drag=null;sizeCanvas();
+}
+
+// ---- RENDER ----
+function render(){
+  autoPos={};
+  const sw=subtreeWidth(tree);
+  assignAuto(tree,sw/2+30,30);
+  // shift if any node goes left of 30
+  let minX=Infinity;
+  for(const id of Object.keys(autoPos)){const p=getPos(id);if(p.x<minX)minX=p.x;}
+  const shift=minX<30?30-minX:0;
+  if(shift>0)for(const id of Object.keys(autoPos))autoPos[id].x+=shift;
+  buildDOM();
+  sizeCanvas();
+}
+
+function buildDOM(){
+  const layer=document.getElementById('nodes-layer');
+  const svg=document.getElementById('svg-lines');
+  layer.innerHTML='';svg.innerHTML='';
+  function make(node){
+    const pos=getPos(node.id);
+    const wrap=document.createElement('div');
+    wrap.className='nbox';wrap.dataset.id=node.id;
+    wrap.style.cssText=`left:${pos.x}px;top:${pos.y}px;width:${NW}px;position:absolute;`;
+
+    // Drag handle
+    const handle=document.createElement('div');
+    handle.className='drag-handle';handle.title='Drag to move this person + all descendants';
+    handle.innerHTML='⠿⠿';
+    handle.addEventListener('mousedown',e=>startDrag(e,node.id));
+    handle.addEventListener('touchstart',e=>startDrag(e,node.id),{passive:false});
+    wrap.appendChild(handle);
+
+    // Person card
+    let cls='person';
+    if(node.id==='root')cls+=' root';
+    if(node.type==='ancestor')cls+=' ancestor';
+    else if(node.type==='gray')cls+=' gray-node';
+    if(node.note)cls+=' has-note';
+    const card=document.createElement('div');card.className=cls;
+
+    const nm=document.createElement('div');nm.className='person-name';nm.textContent=node.name;card.appendChild(nm);
+    if(node.year){const yr=document.createElement('div');yr.className='person-year';yr.textContent=node.year;card.appendChild(yr);}
+    if(node.note){const nt=document.createElement('div');nt.className='person-note-pre';nt.title=node.note;nt.textContent='📝 '+node.note.slice(0,18)+(node.note.length>18?'…':'');card.appendChild(nt);}
+
+    // Action bar
+    const ab=document.createElement('div');ab.className='action-bar';
+    const eb=document.createElement('button');eb.textContent='✎ Edit';eb.onclick=e=>{e.stopPropagation();if(isEditMode)openEdit(node.id);};ab.appendChild(eb);
+    if(node.id!=='root'){
+      const db=document.createElement('button');db.className='del';db.textContent='× Del';
+      db.onclick=e=>{e.stopPropagation();if(!isEditMode)return;if(!confirm('Delete '+node.name+' and all their descendants?'))return;const p=findParent(node.id,tree,null);if(p){p.children=p.children.filter(c=>c.id!==node.id);render();}};
+      ab.appendChild(db);
+    }
+    card.appendChild(ab);
+    wrap.appendChild(card);
+
+    // Add child (+below)
+    const ac=document.createElement('button');ac.className='add-btn';
+    ac.style.cssText=`bottom:-28px;left:${NW/2-10}px;`;ac.title='Add son';ac.textContent='+';
+    ac.onclick=()=>{if(isEditMode)openAdd('Add son',(name,year,type,note)=>{node.children.push({id:gid(),name,year,note,type,children:[]});render();});};
+    wrap.appendChild(ac);
+
+    // Add sibling (+right)
+    if(node.id!=='root'){
+      const as=document.createElement('button');as.className='add-btn';
+      as.style.cssText=`top:${NH/2-10}px;left:${NW+4}px;`;as.title='Add brother';as.textContent='+';
+      as.onclick=()=>{if(isEditMode)openAdd('Add brother',(name,year,type,note)=>{const p=findParent(node.id,tree,null);if(p){const i=p.children.indexOf(node);p.children.splice(i+1,0,{id:gid(),name,year,note,type,children:[]});render();}});};
+      wrap.appendChild(as);
+    }
+    layer.appendChild(wrap);
+    for(const c of node.children||[])make(c);
+  }
+  make(tree);
+  drawLines();
+}
+
+function drawLines(){
+  const svg=document.getElementById('svg-lines');svg.innerHTML='';
+  function dl(node){
+    const par=findParent(node.id,tree,null);
+    if(par){
+      const pp=getPos(par.id),cp=getPos(node.id);
+      const px=pp.x+NW/2,py=pp.y+NH,cx2=cp.x+NW/2,cy2=cp.y,mid=(py+cy2)/2;
+      const p=document.createElementNS('http://www.w3.org/2000/svg','path');
+      p.setAttribute('d',`M${px},${py} C${px},${mid} ${cx2},${mid} ${cx2},${cy2}`);
+      p.setAttribute('fill','none');
+      p.setAttribute('stroke',node.type==='ancestor'?'#C8A800':'#2c5f8a');
+      p.setAttribute('stroke-width','1.5');p.setAttribute('opacity','0.42');
+      svg.appendChild(p);
+    }
+    for(const c of node.children||[])dl(c);
+  }
+  dl(tree);sizeCanvas();
+}
+
+function repaint(){
+  // Fast update: just move DOM boxes and redraw lines
+  for(const id of Object.keys(autoPos)){
+    const box=document.querySelector(`.nbox[data-id="${id}"]`);
+    if(!box)continue;
+    const pos=getPos(id);
+    box.style.left=pos.x+'px';box.style.top=pos.y+'px';
+  }
+  drawLines();
+}
+
+function sizeCanvas(){
+  let maxX=0,maxY=0;
+  for(const id of Object.keys(autoPos)){const p=getPos(id);maxX=Math.max(maxX,p.x+NW);maxY=Math.max(maxY,p.y+NH);}
+  const w=maxX+60,h=maxY+80;
+  const inner=document.getElementById('canvas-inner');
+  inner.style.width=w+'px';inner.style.height=h+'px';
+  const svg=document.getElementById('svg-lines');
+  svg.setAttribute('width',w);svg.setAttribute('height',h);
+}
+
+// ---- PASSWORD ----
+function promptPassword(){
+  document.getElementById('pw-input').value='';
+  document.getElementById('pw-error').textContent='';
+  document.getElementById('pw-panel').style.display='block';
+  document.getElementById('pw-overlay').style.display='block';
+  setTimeout(()=>document.getElementById('pw-input').focus(),60);
+}
+function closePw(){
+  document.getElementById('pw-panel').style.display='none';
+  document.getElementById('pw-overlay').style.display='none';
+}
+function checkPw(){
+  if(document.getElementById('pw-input').value==='3123950'){
+    closePw();enterEditMode();
+  } else {
+    const err=document.getElementById('pw-error');
+    err.textContent='Incorrect password. Try again.';
+    document.getElementById('pw-input').value='';
+    document.getElementById('pw-input').focus();
+    setTimeout(()=>err.textContent='',3000);
+  }
+}
+function enterEditMode(){
+  isEditMode=true;
+  document.getElementById('canvas-wrap').classList.add('edit-mode');
+  document.getElementById('edit-banner').classList.add('show');
+  document.getElementById('btn-enter-edit').style.display='none';
+  ['btn-save-html','btn-load','btn-json','btn-reset','btn-exit-edit'].forEach(id=>document.getElementById(id).style.display='');
+  document.getElementById('tree-subtitle').textContent='Edit Mode · Drag ⠿⠿ handle to move any branch · Hover to edit / add / delete';
+  render();
+}
+function exitEditMode(){
+  isEditMode=false;
+  document.getElementById('canvas-wrap').classList.remove('edit-mode');
+  document.getElementById('edit-banner').classList.remove('show');
+  document.getElementById('btn-enter-edit').style.display='';
+  ['btn-save-html','btn-load','btn-json','btn-reset','btn-exit-edit'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('tree-subtitle').textContent='View only · Click "Edit Mode" to make changes';
+  render();
+}
+function resetLayout(){if(!confirm('Reset all manual positions back to auto layout?'))return;nodeOffsets={};render();}
+
+// ---- EDIT PANEL ----
+function openAdd(title,cb){
+  editingId=null;pending=cb;
+  document.getElementById('panel-title').textContent=title;
+  ['p-name','p-year','p-note'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('p-type').value='normal';
+  document.getElementById('btn-save').textContent='Add';
+  document.getElementById('panel').style.display='block';
+  document.getElementById('overlay').style.display='block';
+  setTimeout(()=>document.getElementById('p-name').focus(),50);
+}
+function openEdit(id){
+  const node=findNode(id,tree);if(!node)return;
+  editingId=id;pending=null;
+  document.getElementById('panel-title').textContent='Edit person';
+  document.getElementById('p-name').value=node.name;
+  document.getElementById('p-year').value=node.year||'';
+  document.getElementById('p-type').value=node.type||'normal';
+  document.getElementById('p-note').value=node.note||'';
+  document.getElementById('btn-save').textContent='Save changes';
+  document.getElementById('panel').style.display='block';
+  document.getElementById('overlay').style.display='block';
+  setTimeout(()=>document.getElementById('p-name').focus(),50);
+}
+function closePanel(){document.getElementById('panel').style.display='none';document.getElementById('overlay').style.display='none';pending=null;editingId=null;}
+function savePanel(){
+  const name=document.getElementById('p-name').value.trim();if(!name){document.getElementById('p-name').focus();return;}
+  const year=document.getElementById('p-year').value.trim();
+  const type=document.getElementById('p-type').value;
+  const note=document.getElementById('p-note').value.trim();
+  if(editingId){const n=findNode(editingId,tree);if(n){n.name=name;n.year=year;n.type=type;n.note=note;}}
+  else if(pending)pending(name,year,type,note);
+  closePanel();render();
+}
+document.getElementById('btn-cancel').onclick=closePanel;
+document.getElementById('overlay').onclick=closePanel;
+document.getElementById('btn-save').onclick=savePanel;
+document.getElementById('p-name').addEventListener('keydown',e=>{if(e.key==='Enter')savePanel();if(e.key==='Escape')closePanel();});
+
+// ---- SAVE / LOAD ----
+function showSaved(){const m=document.getElementById('saved-msg');m.classList.add('show');setTimeout(()=>m.classList.remove('show'),2500);}
+
+function exportHTML(){
+  let html=document.documentElement.outerHTML;
+  html=html.replace(/let tree=\{[\s\S]*?\};[\s\n]*let nid=\d+/,
+    `let tree=${JSON.stringify(tree)};let nid=${nid}`);
+  html=html.replace(/let nodeOffsets=\{[^}]*\}/,`let nodeOffsets=${JSON.stringify(nodeOffsets)}`);
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='family_tree.html';a.click();
+  showSaved();
+}
+function exportJSON(){
+  const blob=new Blob([JSON.stringify({tree,nid,nodeOffsets},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='family_tree_data.json';a.click();
+  showSaved();
+}
+function importFile(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const text=ev.target.result;
+      if(file.name.endsWith('.json')){
+        const d=JSON.parse(text);
+        if(d.tree){tree=d.tree;nid=d.nid||500;nodeOffsets=d.nodeOffsets||{};render();showSaved();}
+      } else {
+        const m=text.match(/let tree=(\{[\s\S]*?\});[\s\n]*let nid=(\d+)/);
+        const mo=text.match(/let nodeOffsets=(\{[\s\S]*?\})/);
+        if(m){tree=JSON.parse(m[1]);nid=parseInt(m[2]);nodeOffsets=mo?JSON.parse(mo[1]):{};render();showSaved();}
+        else alert('Could not read data. Try JSON export/import.');
+      }
+    }catch(err){alert('Error: '+err.message);}
+  };
+  reader.readAsText(file);e.target.value='';
+}
+
+render();
+</script>
+
+
+
+</div><!-- end #tree-page -->
+
+<!-- ==================== LOGIN SCRIPT ==================== -->
+<script>
+// Generate stars
+(function(){
+  const c = document.getElementById('stars-container');
+  for(let i = 0; i < 150; i++){
+    const s = document.createElement('div');
+    s.className = 'star';
+    const sz = Math.random() * 2.5 + 0.5;
+    s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*6}s;opacity:${0.15+Math.random()*0.6}`;
+    c.appendChild(s);
+  }
+})();
+
+function doSiteLogin() {
+  const inp = document.getElementById('site-pw-input');
+  const err = document.getElementById('login-err-msg');
+  if (inp.value === 'Obeidworld') {
+    err.classList.remove('show');
+    const lp = document.getElementById('login-page');
+    lp.classList.add('fade-out');
+    setTimeout(() => {
+      lp.style.display = 'none';
+      const tp = document.getElementById('tree-page');
+      tp.style.display = 'block';
+      // Trigger the tree render now that the page is visible
+      if (typeof render === 'function') render();
+    }, 900);
+  } else {
+    err.classList.add('show');
+    inp.classList.add('shake');
+    inp.value = '';
+    setTimeout(() => {
+      inp.classList.remove('shake');
+      err.classList.remove('show');
+    }, 3200);
+    inp.focus();
+  }
+}
+
+function doLogout() {
+  // Hide tree, show login
+  document.getElementById('tree-page').style.display = 'none';
+  const lp = document.getElementById('login-page');
+  lp.style.display = 'flex';
+  lp.classList.remove('fade-out');
+  document.getElementById('site-pw-input').value = '';
+  // Exit edit mode if active
+  if (typeof exitEditMode === 'function' && typeof isEditMode !== 'undefined' && isEditMode) {
+    exitEditMode();
+  }
+}
+</script>
+
+</body>
+</html>
